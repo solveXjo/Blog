@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once 'app/controllers/Posts.php';
 $userRepo = new UserRepository($db);
 
@@ -33,5 +32,3 @@ if (!$singlepost) {
 
 $userId = $singlepost['user_id'];
 $userInfo = $userRepo->getUserById($userId);
-
-

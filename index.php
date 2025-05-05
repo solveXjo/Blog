@@ -3,7 +3,7 @@
 require_once 'app/models/PostRepository.php';
 require_once 'app/core/Database.php';
 require 'config/config.php';
-
+require 'config/bootstrap.php';
 $db = new Database(require 'config/config.php');
 $postRepo = new PostRepository($db);
 

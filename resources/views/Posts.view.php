@@ -1,5 +1,4 @@
 <?php
-session_start();
 require 'app/controllers/Posts.php';
 require 'vendor/autoload.php';
 

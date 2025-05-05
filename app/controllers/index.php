@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 
 $db = new Database(require 'config/config.php');
