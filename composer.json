@@ -1,0 +1,15 @@
+{
+    "name": "fathi/crud_php",
+    "autoload": {
+        "psr-4": {
+            "Fathi\\CrudPhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Solvex",
+            "email": "fathii.alsadi@gmail.com"
+        }
+    ],
+    "require": {}
+}
