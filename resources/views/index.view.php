@@ -1,10 +1,11 @@
 <?php
 
 require 'app/controllers/HomeController.php';
-require_once 'app/core/Database.php';
 $config = require 'config/config.php';
 $db = new Database($config);
+
 $HomeController = new HomeController($db);
+
 $HomeController->handlePostRequest();
 $allPosts = $HomeController->getAllPosts();
 $mostLikedPosts = $HomeController->getMostLikedPosts(5);

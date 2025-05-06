@@ -1,6 +1,15 @@
 <?php
-require 'app/controllers/Posts.php';
-require 'vendor/autoload.php';
+require 'app/controllers/PostController.php';
+$config = require 'config/config.php';
+$db = new Database($config);
+
+$PostController = new PostController($db);
+
+$PostController->handleRequest();
+$posts = $PostController->getAllPosts();
+$getMostRecentPosts = $PostController->getMostRecentPosts(5);
+
+require_once 'vendor/autoload.php';
 
 $parser = new Parsedown();
 ?>
@@ -59,14 +68,14 @@ $parser = new Parsedown();
                   <article class="article p-5 mb-3">
                     <?php if (!empty($post['image_path'])) : ?>
                       <div class="post-img">
-                        <a href="/post/<?= $post['id'] ?>-<?= createSlug($post['caption']) ?>">
+                        <a href="/post/<?= $post['id'] ?>-<?= $postC ?>">
                           <img src="<?= $post['image_path'] ?>" alt="Post image" class="img-fluid" margin-left: 15;>
                         </a>
                       </div>
                     <?php endif; ?>
 
                     <h2 class="title">
-                      <a class="single-post-col" href="/post/<?= $post['id'] ?>-<?= createSlug($post['caption']) ?>">
+                      <a class="single-post-col" href="/post/<?= $post['id'] ?>-<?= $PostController->createSlug($post['caption']) ?>">
                         <?= $parser->text($post['caption']) ?>
                       </a>
                     </h2>
