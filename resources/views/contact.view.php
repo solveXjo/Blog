@@ -2,7 +2,6 @@
 require 'vendor/autoload.php';
 require 'app/controllers/ContactController.php';
 
-// Initialize the controller (assuming you have a Database class)
 require_once 'app/core/Database.php';
 $db = new Database(require 'config/config.php');
 $contactController = new ContactController($db);
