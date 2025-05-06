@@ -1,38 +1,7 @@
-<?php
-
-class Team
-{
-    private $db;
-
-    public function __construct()
-    {
-        $this->db = new Database(require 'config/config.php');
-    }
-
-    public function getAllTeamMembers()
-    {
-        try {
-            $query = "SELECT * FROM team";
-            $stmt = $this->db->connection->prepare($query);
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            error_log("Team member fetch error: " . $e->getMessage());
-            return [];
-        }
-    }
-}
-
-
-$team = new Team();
-$teamMembers = $team->getAllTeamMembers();
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
-    <?php include "Partials/head.php" ?>
+    <?php include "Partials/head.php";
+    require_once "app/controllers/team.php" ?>
+
 </head>
 
 <body>
@@ -80,5 +49,3 @@ $teamMembers = $team->getAllTeamMembers();
     </section>
 
 </body>
-
-</html>

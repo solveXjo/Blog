@@ -1,11 +1,120 @@
 <?php
-require 'app/controllers/contact.php';
+require 'vendor/autoload.php';
+require 'app/controllers/ContactController.php';
+
+// Initialize the controller (assuming you have a Database class)
+require_once 'app/core/Database.php';
+$db = new Database(require 'config/config.php');
+$contactController = new ContactController($db);
+$contactController->handleContactForm();
 ?>
 
 <head>
     <?php include "Partials/head.php"; ?>
+    <link rel="stylesheet" href="style.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <title>Contact - Altibbi</title>
+    <style>
+        /*--------------------------------------------------------------
+# Contact Section
+--------------------------------------------------------------*/
+        .contact .info-card {
+            background-color: var(--surface-color);
+            padding: 30px;
+            text-align: center;
+            height: 100%;
+            border-radius: 10px;
+            border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .contact .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .contact .info-card .icon-box {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: color-mix(in srgb, var(--accent-color), transparent 92%);
+        }
+
+        .contact .info-card .icon-box i {
+            font-size: 24px;
+            color: var(--accent-color);
+        }
+
+        .contact .info-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .contact .info-card p {
+            margin: 0;
+            color: color-mix(in srgb, var(--default-color), transparent 20%);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .contact .form-wrapper .input-group .input-group-text {
+            color: var(--accent-color);
+            background-color: color-mix(in srgb, var(--default-color), transparent 96%);
+            border-color: color-mix(in srgb, var(--default-color), transparent 85%);
+            border-radius: 8px 0 0 8px;
+            padding: 12px 15px;
+        }
+
+        .contact .form-wrapper .input-group .form-control {
+            color: var(--default-color);
+            background-color: var(--surface-color);
+            border-radius: 0 8px 8px 0;
+            box-shadow: none;
+            font-size: 14px;
+            border-color: color-mix(in srgb, var(--default-color), transparent 85%);
+            padding: 12px 15px;
+        }
+
+        .contact .form-wrapper .input-group .form-control:focus {
+            border-color: var(--accent-color);
+        }
+
+        .contact .form-wrapper .input-group .form-control::placeholder {
+            color: color-mix(in srgb, var(--default-color), transparent 70%);
+        }
+
+        .contact .form-wrapper select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            padding-right: 40px;
+        }
+
+        .contact .form-wrapper textarea.form-control {
+            min-height: 160px;
+        }
+
+        .contact .form-wrapper button {
+            background-color: var(--accent-color);
+            border: 0;
+            padding: 12px 40px;
+            color: var(--contrast-color);
+            border-radius: 50px;
+            transition: 0.3s;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .contact .form-wrapper button:hover {
+            background-color: color-mix(in srgb, var(--accent-color), transparent 20%);
+        }
+    </style>
 </head>
 
 <body class="contact-page">
@@ -20,10 +129,9 @@ require 'app/controllers/contact.php';
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.</p>
         </div>
 
-        <!-- Display success/error messages -->
         <?php
-        if (!empty($successMessage)) echo $successMessage;
-        if (!empty($errorMessage)) echo $errorMessage;
+        echo $contactController->getSuccessMessage();
+        echo $contactController->getErrorMessage();
         ?>
 
         <!-- Contact Section -->
@@ -81,7 +189,7 @@ require 'app/controllers/contact.php';
                                         <div class="error-message"></div>
                                         <div class="sent-message">Your message has been sent. Thank you!</div>
                                     </div>
-                                    <div class="g-recaptcha my-3" data-sitekey="<?php echo $siteKey; ?>"></div>
+                                    <div class="g-recaptcha my-3" data-sitekey="<?php echo $contactController->getSiteKey(); ?>"></div>
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-primary">Submit Message</button>
                                     </div>

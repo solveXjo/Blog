@@ -4,6 +4,7 @@ require "app/core/Router.php";
 $router = new Router();
 
 $router->addRoute('/',   'resources/views/index.view.php');
+$router->addRoute('/home',   'resources/views/index.view.php');
 $router->addRoute('/index', __DIR__ . '/../resources/views/index.view.php');
 $router->addRoute('/signup', __DIR__ . '/../resources/views/auth/signup.view.php');
 $router->addRoute('/posts', __DIR__ . '/../resources/views/posts.view.php');

@@ -29,7 +29,7 @@ class Router
     public function route(string $uri): void
     {
         foreach ($this->routes as $route) {
-            if (isset($route['exact']) && $route['uri'] === $uri) {
+            if (isset($route['exact']) && $route['exact'] && $route['uri'] === $uri) {
                 $this->loadView($route['view']);
                 return;
             }
@@ -59,7 +59,7 @@ class Router
             }
         }
 
-        $this->loadView('resources/views/index.view.php');
+        $this->loadView('resources/views/errors/404.view.php');
     }
 
     protected function loadView(string $viewPath): void

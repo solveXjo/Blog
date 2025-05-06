@@ -52,7 +52,7 @@
 
       </div>
 
-      <?php include 'team.php'; ?>
+      <?php include 'resources/views/team.view.php'; ?>
 
     </div>
   </section><!-- /About Section -->

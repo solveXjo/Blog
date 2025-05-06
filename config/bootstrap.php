@@ -19,33 +19,13 @@ require_once  'app/core/Cache.php';
 
 $db = new Database($config);
 
-
-require_once APP_ROOT . '/app/models/PostRepository.php';
-// require_once 'app/models/UserRepository.php';
-$postRepo = new PostRepository($db);
-// $userRepo = new UserRepository($db);
-
 $session = new Session();
 
 $cache = new Cache(['path' => STORAGE_PATH . '/cache', 'ttl' => 3600]);
 
-function db()
-{
-    global $db;
-    return $db;
-}
 
-function posts()
-{
-    global $postRepo;
-    return $postRepo;
-}
 
-function users()
-{
-    global $userRepo;
-    return $userRepo;
-}
+
 
 function session()
 {
@@ -57,4 +37,15 @@ function cache()
 {
     global $cache;
     return $cache;
+}
+
+function db()
+{
+    global $db;
+    return $db;
+}
+function users()
+{
+    global $userRepo;
+    return $userRepo;
 }

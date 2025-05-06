@@ -1,16 +1,22 @@
 <?php
 
-require 'app/controllers/index.php';
-?>
+require 'app/controllers/HomeController.php';
+require_once 'app/core/Database.php';
+$config = require 'config/config.php';
+$db = new Database($config);
+$HomeController = new HomeController($db);
+$HomeController->handlePostRequest();
+$allPosts = $HomeController->getAllPosts();
+$mostLikedPosts = $HomeController->getMostLikedPosts(5);
 
-<!DOCTYPE html>
-<html lang="en">
+
+
+?>
 
 <head>
     <?php include 'Partials/head.php'; ?>
     <title>Home - Altibbi</title>
 
-    <!-- <script>(function(w, d) { w.CollectId = "6803c1e31f59b1cbec8afe0d"; var h = d.head || d.getElementsByTagName("head")[0]; var s = d.createElement("script"); s.setAttribute("type", "text/javascript"); s.async=true; s.setAttribute("src", "https://collectcdn.com/launcher.js"); h.appendChild(s); })(window, document);</script> -->
 </head>
 
 <body>
