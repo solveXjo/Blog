@@ -1,11 +1,26 @@
 <?php
-require_once "app/controllers/single-post.php";
+require_once "app/controllers/SinglePostController.php";
 // require "controllers/Posts.php";
 require 'vendor/autoload.php';
+require_once "app/core/Database.php";
+$config = require "config/config.php";
+require_once "app/models/PostRepository.php";
+require_once "app/models/UserRepository.php";
+
+
+$db = new Database($config);
+$postRepo = new PostRepository($db);
+$userRepo = new UserRepository($db);
+$SP = new SinglePostController($db, $postRepo, $userRepo);
 
 $parser = new Parsedown();
 
+$postId = $SP->getPostId();
+$singlepost = $SP->getSinglePost($postId);
 
+$userId = $SP->getUserId($singlepost);
+
+$userInfo = $SP->getUserInfo($userId);
 ?>
 
 <head>

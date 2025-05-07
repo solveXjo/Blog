@@ -36,7 +36,7 @@ class CategoryController
 
     public function getPageTitle($currentCategory)
     {
-        return !empty($currentCategory) ? ucfirst($currentCategory) . " Posts" : "All Posts";
+        return !empty($currentCategory) ? $currentCategory . " Posts" : "All Posts";
     }
 
     public function mergeQuery(array $newParams = [])

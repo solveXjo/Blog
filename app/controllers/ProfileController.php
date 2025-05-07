@@ -34,7 +34,6 @@ class ProfileController
                 exit();
             } else {
                 $error = "Failed to delete account.";
-                header("Location: /profile_edit");
                 return $error;
             }
         }
@@ -47,11 +46,9 @@ class ProfileController
         $confirmPassword = $_POST['confirm_password'] ?? '';
         if ($newPassword !== $confirmPassword) {
             $error = "New passwords do not match.";
-            header("Location: /profile_edit");
             return $error;
         } elseif (strlen($newPassword) < 8) {
             $error = "password length should be more than 7 charecters";
-            header("Location: /profile_edit");
             return $error;
         } else {
             if ($this->userRepo->changePassword($userId, $newPassword)) {
@@ -59,7 +56,6 @@ class ProfileController
                 return $success;
             } else {
                 $error = "Current password is incorrect.";
-                header("Location: /profile_edit");
 
                 return $error;
             }
@@ -79,12 +75,8 @@ class ProfileController
 
                 if (!in_array($fileExt, $allowedExtensions)) {
                     $error = "Only JPG, JPEG, PNG files are allowed.";
-                    header("Location: /profile_edit");
-                    return $error;
                 } elseif ($file['size'] > $maxFileSize) {
                     $error = "File size must be less than 5MB.";
-                    header("Location: /profile_edit");
-                    return $error;
                 } else {
                     $newFileName = uniqid('', true) . '.' . $fileExt;
                     $uploadDir = 'uploads/';
@@ -102,10 +94,7 @@ class ProfileController
                         $this->userRepo->updateImage($userId, $newFileName);
                     } else {
                         $error = "Failed to upload image.";
-                        header("Location: /profile_edit");
-
-                        return $error;
-                    }
+                }
                 }
             }
 
@@ -113,7 +102,6 @@ class ProfileController
             return $success;
         } catch (Exception $e) {
             $error = "An error occurred: " . $e->getMessage();
-            header("Location: /profile_edit");
             return $error;
         }
     }
@@ -139,20 +127,16 @@ class ProfileController
 
             if (!$name || !$age || !$email) {
                 $error = "Name, age, and email are required fields.";
-                header("Location: /profile_edit");
                 return $error;
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $error = "Invalid email format";
-                header("Location: /profile_edit");
 
                 return $error;
             } elseif ($stmt->fetch()) {
-                header("Location: /profile_edit");
                 $error = "Email already registered by another user";
                 return $error;
             } elseif ($age > 80 || $age < 18) {
                 $error = "the age must be between 18 and 80";
-                header("Location: /profile_edit");
 
                 return $error;
             } else {

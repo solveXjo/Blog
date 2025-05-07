@@ -1,91 +1,31 @@
 <?php
-require "app/controllers/comment.php";
-?>
 
+require_once 'app/core/Database.php';
+require_once 'app/models/PostRepository.php';
+require_once 'app/models/UserRepository.php';
+require_once 'app/controllers/CommentController.php';
+
+$config = require 'config/config.php';
+
+$db = new Database($config);
+$postRepo = new PostRepository($db);
+$userRepo = new UserRepository($db);
+$commentController = new CommentController($db, $postRepo, $userRepo);
+
+$commentController->processRequest();
+
+$postId = $commentController->getPostId();
+$userId = $commentController->getUserId();
+$userInfo = $commentController->getUserInfo($userId);
+$comments = $commentController->getAllComments($postId);
+$commentCount = $commentController->getCommentCount($comments);
+
+?>
 
 <head>
     <?php include 'Partials/head.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
-
     <title>Comments</title>
-    <style>
-        .comment {
-            margin-bottom: 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .comment-img img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .comment-info {
-            flex-grow: 1;
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1rem;
-            position: relative;
-        }
-
-        .comment-info:before {
-            content: '';
-            position: absolute;
-            left: -10px;
-            top: 15px;
-            width: 0;
-            height: 0;
-            border-top: 10px solid transparent;
-            border-bottom: 10px solid transparent;
-            border-right: 10px solid #f8f9fa;
-        }
-
-        .replies-container {
-            margin-left: 60px;
-            border-left: 2px solid #dee2e6;
-            padding-left: 20px;
-        }
-
-        .reply-form,
-        .edit-form {
-            display: none;
-            margin-top: 1rem;
-        }
-
-        .comment-actions {
-            position: absolute;
-            right: 10px;
-            top: 10px;
-        }
-
-        .comment-content {
-            margin-top: 0.5rem;
-        }
-
-        .comment-time {
-            font-size: 0.8rem;
-            color: #6c757d;
-        }
-
-        .reply-btn {
-            background: none;
-            border: none;
-            color: #0d6efd;
-            padding: 0;
-            font-size: 0.9rem;
-        }
-
-        .reply-btn:hover {
-            text-decoration: underline;
-        }
-
-        .dropdown-toggle::after {
-            display: none;
-        }
-    </style>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var dropdownElements = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
@@ -154,9 +94,6 @@ require "app/controllers/comment.php";
             </div>
         </div>
     </div>
-
-
-
 
     <script>
         function toggleReplyForm(commentId) {

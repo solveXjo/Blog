@@ -1,6 +1,5 @@
 <?php
 require_once 'app/controllers/Posts.php';
-$userRepo = new UserRepository($db);
 
 
 class SinglePostController
@@ -9,7 +8,7 @@ class SinglePostController
     private $userRepo;
     private $db;
 
-    public function __construct(Database $db)
+    public function __construct(Database $db, PostRepository $postRepo, UserRepository $userRepo)
     {
         $this->db = $db;
         $this->postRepo = new PostRepository($db);
@@ -17,6 +16,20 @@ class SinglePostController
     }
 
 
+    public function getPostId()
+    {
+        $postId = $_GET['id'] ?? null;
+
+        if (!is_numeric($postId)) {
+            $postId = substr($_SERVER['REQUEST_URI'], strlen('/post/'));
+        }
+
+        if (empty($postId) || !is_numeric(value: $postId)) {
+            die("Invalid post ID.");
+        }
+
+        return $postId;
+    }
     public function getSinglePost($postId)
     {
         $singlepost = $this->postRepo->getPostById($postId);
@@ -27,7 +40,26 @@ class SinglePostController
 
         return $singlepost;
     }
+
+    public function getUserId($singlepost)
+    {
+        $userId = $singlepost['user_id'];
+
+        if (empty($userId) || !is_numeric(value: $userId)) {
+            die("Invalid user ID.");
+        }
+
+        return $userId;
+    }
+
+    public function getUserInfo($userId)
+    {
+        $userInfo = $this->userRepo->getUserById($userId);
+
+        if (!$userInfo) {
+            die("User not found.");
+        }
+
+        return $userInfo;
+    }
 }
-
-
-

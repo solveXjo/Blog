@@ -1,21 +1,22 @@
 <?php
 if (!function_exists('displayComment')) {
-    function displayComment($comment, $postId, $userId, $depth = 0)
+    function displayComment($comment, $postId, $userId, $userInfo, $depth = 0)
     {
         $maxDepth = 5;
         $marginLeft = $depth > 0 ? min($depth * 40, 200) : 0;
 ?>
-        <div id="comment-<?= $comment['id'] ?>" class="comment" style="margin-left: <?= $marginLeft ?>px">
+        <div id="comment-<?= $comment['id'] ?>" class="comment mb-4" style="margin-left: <?= $marginLeft ?>px">
             <div class="d-flex gap-3">
                 <div class="comment-img">
                     <img src="<?= !empty($comment['image_path']) ? 'uploads/' . htmlspecialchars($comment['image_path']) : 'assets/img/default-profile.png' ?>"
-                        class="rounded-circle">
+                        class="rounded-circle"
+                        style="width: 50px; height: 50px; object-fit: cover;">
                 </div>
                 <div class="comment-info flex-grow-1 position-relative">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <h5 class="mb-1"><?= htmlspecialchars($comment['name']) ?></h5>
-                            <small class="comment-time">
+                            <small class="comment-time text-muted">
                                 <i class="far fa-clock me-1"></i>
                                 <?= date("M j, Y g:i a", strtotime($comment['created_at'])) ?>
                             </small>
@@ -54,14 +55,14 @@ if (!function_exists('displayComment')) {
                         <p class="mb-2"><?= nl2br(htmlspecialchars($comment['comment'])) ?></p>
 
                         <?php if ($depth < $maxDepth) : ?>
-                            <button class="reply-btn" onclick="toggleReplyForm(<?= $comment['id'] ?>)">
+                            <button class="btn btn-sm btn-link text-primary p-0" onclick="toggleReplyForm(<?= $comment['id'] ?>)">
                                 <i class="fas fa-reply me-1"></i>Reply
                             </button>
                         <?php endif; ?>
                     </div>
 
                     <!-- Edit form -->
-                    <div class="edit-form mt-2">
+                    <div class="edit-form mt-2" style="display: none;">
                         <form method="POST" action="/comment/<?= $postId ?>" class="d-flex gap-2">
                             <input type="hidden" name="comment_id" value="<?= $comment['id'] ?>">
                             <textarea name="new_comment" class="form-control" rows="3" required><?= htmlspecialchars($comment['comment']) ?></textarea>
@@ -81,16 +82,17 @@ if (!function_exists('displayComment')) {
 
             <!-- Reply form -->
             <?php if ($depth < $maxDepth) : ?>
-                <div id="reply-form-<?= $comment['id'] ?>" class="reply-form mt-3 ms-5">
+                <div id="reply-form-<?= $comment['id'] ?>" class="reply-form mt-3 ms-5" style="display: none;">
                     <form method="POST" action="/comment/<?= $postId ?>" class="d-flex gap-3">
                         <div>
-                            <img src="<?= 'uploads/' . ($userInfo['image_path'] ?? 'default.png') ?>"
+                            <img src="<?= 'uploads/' . ($userInfo['image_path'] ?? 'default-profile.png') ?>"
                                 alt="Your profile"
                                 class="rounded-circle"
                                 style="width: 40px; height: 40px; object-fit: cover;">
                         </div>
                         <div class="flex-grow-1">
                             <input type="hidden" name="parent_id" value="<?= $comment['id'] ?>">
+                            <input type="hidden" name="post_id" value="<?= $postId ?>">
                             <textarea name="reply" class="form-control mb-2" rows="2"
                                 placeholder="Write your reply..." required></textarea>
                             <div class="d-flex gap-2">
@@ -111,13 +113,14 @@ if (!function_exists('displayComment')) {
             <?php if (!empty($comment['replies'])) : ?>
                 <div class="replies-container mt-3">
                     <?php foreach ($comment['replies'] as $reply) : ?>
-                        <?php displayComment($reply, $postId, $userId, $depth + 1); ?>
+                        <?php displayComment($reply, $postId, $userId, $userInfo, $depth + 1); ?>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
-    <?php
+        </div>
+<?php
     }
 }
 
-displayComment($comment, $postId, $userId);
-    ?>
+displayComment($comment, $postId, $userId, $userInfo);
+?>

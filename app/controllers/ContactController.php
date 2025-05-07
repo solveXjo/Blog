@@ -56,7 +56,7 @@ class ContactController
         $message = $this->sanitizeInput($_POST["message"] ?? '');
         $recaptchaResponse = $this->sanitizeInput($_POST["g-recaptcha-response"] ?? '');
 
-        // Validate inputs
+
         $this->errors = [];
         if (empty($name)) $this->errors[] = "Name is required.";
         if (empty($email)) $this->errors[] = "Email is required.";
