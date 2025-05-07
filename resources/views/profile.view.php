@@ -1,4 +1,20 @@
-<?php require "app/controllers/profile.php"; ?>
+<?php
+require "app/controllers/ProfileController.php";
+require_once "app/core/Database.php";
+require_once "app/models/UserRepository.php";
+$db = new Database(require 'config/config.php');
+
+
+$userRepo = new UserRepository($db);
+
+$PC = new ProfileController($db, $userRepo);
+
+$user = $PC->getProfile();
+
+
+$PC->handleProfileUpdate($user['id']);
+
+?>
 
 <head>
     <?php include 'partials/head.php'; ?>

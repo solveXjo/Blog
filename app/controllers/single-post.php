@@ -30,5 +30,4 @@ if (!$singlepost) {
     die("Post not found.");
 }
 
-$userId = $singlepost['user_id'];
-$userInfo = $userRepo->getUserById($userId);
+

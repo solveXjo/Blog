@@ -1,6 +1,24 @@
 <?php
-require 'app/controllers/profile_edit.php';
+require "app/controllers/EditProfileController.php";
+require_once "app/core/Database.php";
+require_once "app/models/UserRepository.php";
+$db = new Database(require 'config/config.php');
+
+
+$userRepo = new UserRepository($db);
+
+$EP = new EditProfileController($db, $userRepo);
+
+$user = $EP->getProfile();
+
+
+$EP->handleProfileUpdate($user['id']);
+
+$success = $EP->getSuccessMessage();
+$error = $EP->getErrorMessage();
 ?>
+
+
 
 <head>
     <title><?= htmlspecialchars($user['name'] ?? 'User') ?> | Profile</title>
