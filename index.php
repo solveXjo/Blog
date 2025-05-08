@@ -1,11 +1,9 @@
 <?php
 
-require 'config/config.php';
-require 'config/bootstrap.php';
-require_once 'app/core/Database.php';
+require 'src/config/bootstrap.php';
+require 'vendor/autoload.php';
 
-
-$router = require __DIR__ . '/config/routes.php';
+$router = require 'src/config/routes.php';
 
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
