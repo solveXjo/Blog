@@ -2,7 +2,9 @@
 require 'vendor/autoload.php';
 require 'app/controllers/ContactController.php';
 
-require_once 'app/core/Database.php';
+use App\Core\Database;
+use App\Controllers\ContactController;
+
 $db = new Database(require 'config/config.php');
 $contactController = new ContactController($db);
 $contactController->handleContactForm();

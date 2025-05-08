@@ -1,11 +1,24 @@
 <?php
+require 'vendor/autoload.php';
 require 'app/controllers/CategoryController.php';
-require_once "app/core/Database.php";
-require_once "app/models/PostRepository.php";
 
-$db = new Database(require 'config/config.php');
+
+use App\Core\Database;
+
+use App\Models\PostRepository;
+
+use App\Controllers\CategoryController;
+
+$config = require 'config/config.php';
+$db = new Database($config);
 $postRepo = new PostRepository($db);
 $catController = new CategoryController($db, $postRepo);
+
+require 'app/controllers/PostController.php';
+
+use App\Controllers\PostController;
+
+$postController = new PostController($db);
 
 $currentCategory = $catController->getCurrentCategory();
 $categories = $catController->getAllCategories();
@@ -60,7 +73,7 @@ $merge_query = [$catController, 'mergeQuery'];
 
                                                 <div class="post-content d-flex flex-column">
                                                     <?php if (!empty($post['id']) && !empty($post['caption'])): ?>
-                                                        <a href="/post/<?= $post['id'] ?>/<?= createSlug($post['caption']) ?>">
+                                                        <a href="/post/<?= $post['id'] ?>/<?= $postController->createSlug($post['caption']) ?>">
                                                             <h3 class="post-title"><?= htmlspecialchars($post['caption']) ?></h3>
                                                         </a>
                                                     <?php endif; ?>

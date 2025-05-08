@@ -1,10 +1,17 @@
 <?php
 
+namespace App\Controllers;
+
+use  App\Core\Database;
+use App\Models\UserRepository;
+use Exception;
+
 
 $success = '';
 $error = '';
 $_SESSION['profile_update_success'] = $success;
 $_SESSION['profile_update_error'] = $error;
+
 class EditProfileController
 {
     private $db;

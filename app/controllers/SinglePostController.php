@@ -1,4 +1,11 @@
 <?php
+
+namespace App\Controllers;
+
+use App\Core\Database;
+use App\Models\PostRepository;
+use App\Models\UserRepository;
+
 require_once 'app/controllers/Posts.php';
 
 

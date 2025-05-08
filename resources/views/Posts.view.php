@@ -1,5 +1,10 @@
 <?php
-require 'app/controllers/PostController.php';
+require_once   'vendor/autoload.php';
+require_once 'app/controllers/PostController.php';
+
+use App\Core\Database;
+use App\Controllers\PostController;
+
 $config = require 'config/config.php';
 $db = new Database($config);
 

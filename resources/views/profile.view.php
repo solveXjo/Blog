@@ -1,18 +1,24 @@
 <?php
-require "app/controllers/ProfileController.php";
-require_once "app/core/Database.php";
-require_once "app/models/UserRepository.php";
-$db = new Database(require 'config/config.php');
 
+require_once   'vendor/autoload.php';
+require_once 'app/controllers/ProfileController.php';
+
+use App\Controllers\ProfileController;
+use App\Core\Database;
+use App\Models\UserRepository;
+
+$config = require   'config/config.php';
+$db = new Database($config);
 
 $userRepo = new UserRepository($db);
 
-$PC = new ProfileController($db, $userRepo);
+$profileController = new ProfileController($db, $userRepo);
 
-$user = $PC->getProfile();
+// Fetch User Data
+$user = $profileController->getProfile();
 
-
-$PC->handleProfileUpdate($user['id']);
+// Handle Profile Update
+$profileController->handleProfileUpdate($user['id']);
 
 ?>
 

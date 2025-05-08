@@ -1,7 +1,13 @@
 <?php
-session_start();
+
+use App\Core\Database;
+use App\Models\PostRepository;
+
 require_once '../../app/core/Database.php';
 require_once '../../app/models/PostRepository.php';
+session_start();
+
+
 
 if (!isset($_SESSION['user_id'])) {
     header("/home");

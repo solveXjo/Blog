@@ -1,5 +1,14 @@
 <?php
 
+namespace App\Controllers;
+
+use App\Core\Database;
+use App\Models\UserRepository;
+
+use Exception;
+
+
+
 class ProfileController
 {
     private $db;
@@ -94,7 +103,7 @@ class ProfileController
                         $this->userRepo->updateImage($userId, $newFileName);
                     } else {
                         $error = "Failed to upload image.";
-                }
+                    }
                 }
             }
 

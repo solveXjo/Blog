@@ -1,16 +1,21 @@
 <?php
-require 'config.php';
-require_once 'Database.php';
+
+namespace App\Models;
+
+use App\Core\Database;
+use PDO;
 
 class User
 {
     private $db;
 
-    public function __construct(Database $db) {
+    public function __construct(Database $db)
+    {
         $this->db = $db;
     }
 
-    public function getUserById($userId) {
+    public function getUserById($userId)
+    {
         $query = "
             SELECT users.id, users.name, users.age, users.email, media.image_path 
             FROM users 
@@ -22,7 +27,8 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function updateUser($userId, $name, $age, $email, $password = null) {
+    public function updateUser($userId, $name, $age, $email, $password = null)
+    {
         $query = "UPDATE users SET name = :name, age = :age, email = :email";
         $params = [':name' => $name, ':age' => $age, ':email' => $email];
 
@@ -38,7 +44,8 @@ class User
         $this->db->query($query, $params);
     }
 
-    public function updateImage($userId, $imagePath) {
+    public function updateImage($userId, $imagePath)
+    {
         $query2 = "SELECT COUNT(*) FROM media WHERE user_id = :user_id";
         $stmt = $this->db->connection->prepare($query2);
         $stmt->execute(['user_id' => $userId]);
@@ -78,7 +85,8 @@ class User
         ]);
     }
 
-        public function findUserByEmail($email) {
+    public function findUserByEmail($email)
+    {
         $query = "SELECT * FROM users WHERE email = :email";
         $stmt = $this->db->connection->prepare($query);
         $stmt->execute(['email' => $email]);
@@ -135,7 +143,8 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function createUser($name, $age, $email, $password, $image) {
+    public function createUser($name, $age, $email, $password, $image)
+    {
         $query = "INSERT INTO users (name, age, email, password, image) VALUES (:name, :age, :email, :password, :image)";
         $stmt = $this->db->connection->prepare($query);
         $stmt->execute([
@@ -147,7 +156,8 @@ class User
         ]);
     }
 
-    public function uploadImage($file) {
+    public function uploadImage($file)
+    {
         $filename = $file['name'];
         $fileTmpName = $file['tmp_name'];
         $fileError = $file['error'];

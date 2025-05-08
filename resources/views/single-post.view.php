@@ -1,11 +1,17 @@
 <?php
-require_once "app/controllers/SinglePostController.php";
 // require "controllers/Posts.php";
 require 'vendor/autoload.php';
-require_once "app/core/Database.php";
+require_once "app/controllers/SinglePostController.php";
+
+
+use App\Core\Database;
+
+use App\Models\PostRepository;
+use App\Models\UserRepository;
+
+use App\Controllers\SinglePostController;
+
 $config = require "config/config.php";
-require_once "app/models/PostRepository.php";
-require_once "app/models/UserRepository.php";
 
 
 $db = new Database($config);

@@ -1,5 +1,13 @@
 <?php
 
+
+namespace App\Controllers;
+
+use App\Core\Database;
+use App\Models\PostRepository;
+use App\Models\UserRepository;
+
+
 class CommentController
 {
     private $postRepo;

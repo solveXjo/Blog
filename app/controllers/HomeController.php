@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Controllers;
+
+use App\Core\Database;
+use App\Models\PostRepository;
 
 class HomeController
 {

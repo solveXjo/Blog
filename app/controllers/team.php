@@ -1,5 +1,10 @@
 <?php
 
+namespace App\Controllers;
+
+use App\Core\Database;
+use PDO;
+
 class Team
 {
     private $db;

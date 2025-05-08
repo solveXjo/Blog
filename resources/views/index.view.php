@@ -1,6 +1,11 @@
 <?php
-
+require_once 'vendor/autoload.php';
 require 'app/controllers/HomeController.php';
+
+use App\Controllers\HomeController;
+use App\Core\Database;
+
+
 $config = require 'config/config.php';
 $db = new Database($config);
 

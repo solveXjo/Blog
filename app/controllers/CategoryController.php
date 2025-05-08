@@ -1,5 +1,11 @@
 <?php
-require_once 'app/controllers/Posts.php';
+
+
+namespace App\Controllers;
+
+use PDO;
+
+
 
 class CategoryController
 {

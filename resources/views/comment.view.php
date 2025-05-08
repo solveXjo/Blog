@@ -1,12 +1,16 @@
 <?php
-
-require_once 'app/core/Database.php';
-require_once 'app/models/PostRepository.php';
-require_once 'app/models/UserRepository.php';
+require 'vendor/autoload.php';
 require_once 'app/controllers/CommentController.php';
 
-$config = require 'config/config.php';
+use App\Core\Database;
 
+use App\Models\PostRepository;
+use App\Models\UserRepository;
+
+use App\Controllers\CommentController;
+
+
+$config = require 'config/config.php';
 $db = new Database($config);
 $postRepo = new PostRepository($db);
 $userRepo = new UserRepository($db);

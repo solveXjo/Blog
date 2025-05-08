@@ -1,5 +1,10 @@
 <?php
 
+namespace App\Models;
+
+use App\Core\Database;
+use PDO;
+
 class PostRepository
 {
     private $db;
@@ -21,6 +26,14 @@ class PostRepository
         }
 
         return $posts;
+    }
+
+    public function createSlug($title)
+    {
+        $slug = strtolower($title);
+        $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+        $slug = trim($slug, '-');
+        return $slug;
     }
 
     public function getPostById($postId)

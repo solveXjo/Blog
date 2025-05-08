@@ -1,7 +1,14 @@
 <?php
+
+use App\Controllers\EditProfileController;
+
+use App\Core\Database;
+
+use App\Models\UserRepository;
+
+
 require "app/controllers/EditProfileController.php";
-require_once "app/core/Database.php";
-require_once "app/models/UserRepository.php";
+
 $db = new Database(require 'config/config.php');
 
 
