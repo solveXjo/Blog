@@ -73,7 +73,7 @@ $parser = new Parsedown();
                   <article class="article p-5 mb-3">
                     <?php if (!empty($post['image_path'])) : ?>
                       <div class="post-img">
-                        <a href="/post/<?= $post['id'] ?>-<?= $postC ?>">
+                        <a href="/post/<?= $post['id'] ?>-<?= $PostController->createSlug($post['caption']) ?>">
                           <img src="<?= $post['image_path'] ?>" alt="Post image" class="img-fluid" margin-left: 15;>
                         </a>
                       </div>
@@ -104,7 +104,7 @@ $parser = new Parsedown();
                       </ul>
                     </div>
 
-                    <!-- Post actions with your working like functionality -->
+                    <!-- Post actions -->
                     <?php if (isset($_SESSION['user_id'])): ?>
                       <div class="post-actions" style="margin-top: 20px;">
                         <button type="button" class="btn btn-outline-primary action-btn like-btn" data-post-id="<?= $post['id'] ?>">

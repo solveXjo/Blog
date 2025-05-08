@@ -54,15 +54,15 @@ class Router
 
             if (is_numeric($postId)) {
                 $_GET["id"] = $postId;
-                $this->loadView(__DIR__ . '/' . '../../resources/views/single-post.view.php');
+                $this->loadView(__DIR__ . '/' . '../../app/views/single-post.view.php');
                 return;
             }
         }
 
-        $this->loadView('resources/views/errors/404.view.php');
+        $this->loadView('app/views/errors/404.view.php');
     }
 
-    protected function loadView(string $viewPath): void
+    public function loadView(string $viewPath): void
     {
         if (!str_starts_with($viewPath, '/')) {
             $viewPath = ltrim($viewPath, '/');
