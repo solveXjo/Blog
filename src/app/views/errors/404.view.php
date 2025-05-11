@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
-
     <title>404 - Blogy Bootstrap Template</title>
     <?php require_once 'Partials/head.php'; ?>
-
-
 </head>
 
 <body class="page-404">

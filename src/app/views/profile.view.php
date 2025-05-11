@@ -2,32 +2,35 @@
 
 require_once   'vendor/autoload.php';
 
-
+use App\Controllers\ProfileController;
+use App\Core\Database;
+use App\Models\UserRepository;
 
 $config = require   'src/config/config.php';
-$db = new App\Core\Database($config);
+$db = new Database($config);
 
-$userRepo = new App\Models\UserRepository($db);
+$userRepo = new UserRepository($db);
 
-$profileController = new App\Controllers\ProfileController();
+$profileController = new ProfileController($db, $userRepo);
 
+// Fetch User Data
+$user = $profileController->getProfile();
 
-$user = $userRepo->getProfile();
-
+// Handle Profile Update
 $profileController->handleProfileUpdate($user['id']);
 
 ?>
 
 <head>
-    <?php include 'src/Partials/head.php'; ?>
+    <?php include 'src/partials/head.php'; ?>
     <title><?= htmlspecialchars($user['name'] ?? 'User') ?> | Profile</title>
 
 </head>
 
 <body>
 
-    <?php require 'src/Partials/nav.php'; ?>
-    <?php include "src/Partials/pageTitle.php"; ?>
+    <?php require 'src/partials/nav.php'; ?>
+    <?php include "src/partials/pageTitle.php"; ?>
 
 
 
@@ -47,15 +50,9 @@ $profileController->handleProfileUpdate($user['id']);
                         <div class="col-lg-4 mb-4 mb-lg-0">
                             <div class="author-card" data-aos="fade-up">
                                 <div class="author-image">
-                                    <form method="post" enctype="multipart/form-data" class="image-upload-form">
-                                        <label for="image" class="btn" style="margin-top: 70px;">
-                                            <img src="src/uploads/<?= !empty($user['image_path']) ? htmlspecialchars($user['image_path']) : 'default.png' ?>" />
-                                        </label>
-
-                                        <input type="file" id="image" name="image" accept="image/*" style="display: none;"
-                                            onchange="this.form.submit()">
-                                    </form>
-
+                                    <label for="image" class="btn" style="margin-top: 70px;">
+                                        <img src="uploads/<?= !empty($user['image_path']) ? htmlspecialchars($user['image_path']) : 'default.png' ?>" />
+                                    </label>
 
                                 </div>
 
@@ -63,7 +60,7 @@ $profileController->handleProfileUpdate($user['id']);
 
 
 
-                                <div class="author-info">
+                                <div class=" author-info">
                                     <h2><?= htmlspecialchars($user['name'] ?? 'User') ?></h2>
 
                                     <p class="designation"><?= htmlspecialchars($user['title'] ?? 'User') ?></p>
@@ -172,7 +169,7 @@ $profileController->handleProfileUpdate($user['id']);
 
     </main>
 
-    <?php require 'src/Partials/footer.php'; ?>
+    <?php require 'src/partials/footer.php'; ?>
 
 </body>
 

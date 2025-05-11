@@ -62,7 +62,7 @@ $commentCount = $commentController->getCommentCount($comments);
                 <form method="POST" action="/comment/<?= $postId ?>" class="mb-4">
                     <div class="d-flex gap-3">
                         <div>
-                            <img src="<?= 'src/uploads/' . ($userInfo['image_path'] ?? 'default-profile.png') ?>"
+                            <img src="<?= 'uploads/' . (!empty($userInfo['image_path']) ? $userInfo['image_path'] : 'default-profile.png') ?>"
                                 alt="Your profile"
                                 class="rounded-circle"
                                 style="width: 50px; height: 50px; object-fit: cover;">

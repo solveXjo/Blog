@@ -8,7 +8,7 @@ if (!function_exists('displayComment')) {
         <div id="comment-<?= $comment['id'] ?>" class="comment mb-4" style="margin-left: <?= $marginLeft ?>px">
             <div class="d-flex gap-3">
                 <div class="comment-img">
-                    <img src="<?= !empty($comment['image_path']) ? 'src/uploads/' . htmlspecialchars($comment['image_path']) : 'assets/img/default-profile.png' ?>"
+                    <img src="<?= !empty($comment['image_path']) ? 'uploads/' . htmlspecialchars($comment['image_path']) : 'assets/img/default-profile.png' ?>"
                         class="rounded-circle"
                         style="width: 50px; height: 50px; object-fit: cover;">
                 </div>

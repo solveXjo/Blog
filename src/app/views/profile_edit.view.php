@@ -202,7 +202,7 @@ $error = $EP->getErrorMessage();
 </head>
 
 <body>
-    <?php require 'src/Partials/nav.php'; ?>
+    <?php require 'src/partials/nav.php'; ?>
     <!-- <? //php include "Partials/pageTitle.php"; 
             ?> -->
     <div class="container">
@@ -219,7 +219,7 @@ $error = $EP->getErrorMessage();
                     <h3>Profile Picture</h3>
                     <form method="post" enctype="multipart/form-data" class="image-upload-form">
                         <label for="image" class="btn" style="margin-top: 70px;">
-                            <img src="src/uploads/<?= !empty($user['image_path']) ? htmlspecialchars($user['image_path']) : 'default.png' ?>" style="max-width: 120;" />
+                        <img src="uploads/<?= !empty($user['image_path']) ? htmlspecialchars($user['image_path']) : 'default.png' ?>" style="max-width: 120;" />
                         </label>
                         <input type="file" id="image" name="image" accept="image/*" style="display: none;"
                             onchange="this.form.submit()">
@@ -558,7 +558,7 @@ $error = $EP->getErrorMessage();
         </div>
     </div>
 
-    <?php require 'src/Partials/footer.php'; ?>
+    <?php require 'Partials/footer.php'; ?>
 
 
 

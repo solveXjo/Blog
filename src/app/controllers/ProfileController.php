@@ -2,7 +2,8 @@
 
 namespace App\Controllers;
 
-
+use App\Core\Database;
+use App\Models\UserRepository;
 
 use Exception;
 
@@ -18,6 +19,20 @@ class ProfileController
     private $errorMessage = '';
     private $successMessage = '';
 
+    public function __construct(Database $db, UserRepository $userRepo)
+    {
+        $this->db = $db;
+        $this->userRepo = $userRepo;
+    }
+
+    public function getUser()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header("Location: /Login");
+            exit();
+        }
+        return $this->userRepo->getUserById($_SESSION['user_id']);
+    }
 
     public function deleteAccount($userId)
     {
@@ -159,7 +174,15 @@ class ProfileController
         }
     }
 
-
+    public function getProfile()
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            header("Location: /Login");
+            exit();
+        }
+        return $user;
+    }
 
     public function handleProfileUpdate($userId)
     {

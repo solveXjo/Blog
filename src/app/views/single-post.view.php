@@ -106,7 +106,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
                                         </p>
                                         <div>
 
-                                            <img src="src/<?= "uploads/" . $userInfo["image_path"] ?? 'images/download.png' ?>" class="testimonial-img" alt="">
+                                            <img src="<?= "uploads/" . $userInfo["image_path"] ?? 'images/download.png' ?>" class="testimonial-img" alt="">
                                             <h3><?= $userInfo["name"] ?></h3>
                                             <h4><?= $userInfo["title"] ?></h4>
                                         </div>
