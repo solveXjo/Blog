@@ -1,28 +1,5 @@
-<?php
-
-
-
-
-$config = require 'src/config/config.php';
-$db = new App\Core\Database($config);
-$postRepo = new App\Models\PostRepository($db);
-$userRepo = new App\Models\UserRepository($db);
-$commentController = new App\Controllers\CommentController($db, $postRepo, $userRepo);
-
-$commentController->processRequest();
-
-$postId = $commentController->getPostId();
-$userId = $commentController->getUserId();
-$userInfo = $commentController->getUserInfo($userId);
-$comments = $commentController->getAllComments($postId);
-$commentCount = $commentController->getCommentCount($comments);
-
-?>
-
 <head>
-    <?php include 'src/Partials/head.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <title>Comments</title>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var dropdownElements = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
@@ -46,8 +23,6 @@ $commentCount = $commentController->getCommentCount($comments);
 </head>
 
 <body class='background'>
-    <?php require 'src/Partials/nav.php'; ?>
-
     <div class="container py-5">
         <a href="/posts" class="btn btn-outline-secondary mb-4">
             <i class="fas fa-arrow-left me-2"></i>Back to Posts

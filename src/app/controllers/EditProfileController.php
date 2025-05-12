@@ -2,27 +2,43 @@
 
 namespace App\Controllers;
 
-use  App\Core\Database;
+use App\Core\BaseController;
 use App\Models\UserRepository;
 use Exception;
 
-
-$success = '';
-$error = '';
-$_SESSION['profile_update_success'] = $success;
-$_SESSION['profile_update_error'] = $error;
-
-class EditProfileController
+class EditProfileController extends BaseController
 {
-    private $db;
-    private $userRepo;
+    protected $success = '';
+    protected $error = '';
 
-
-
-    public function __construct(Database $db, UserRepository $userRepo)
+    public function __construct()
     {
-        $this->db = $db;
-        $this->userRepo = $userRepo;
+        parent::__construct();
+        $this->userRepo = new UserRepository($this->db);
+
+        if (!isset($_SESSION['profile_update_success'])) {
+            $_SESSION['profile_update_success'] = '';
+        }
+        if (!isset($_SESSION['profile_update_error'])) {
+            $_SESSION['profile_update_error'] = '';
+        }
+    }
+
+    public function show()
+    {
+        $user = $this->getProfile();
+
+        $this->handleProfileUpdate($user['id']);
+
+        $success = $this->getSuccessMessage();
+        $error = $this->getErrorMessage();
+
+        echo $this->view->renderWithLayout('profile_edit.view.php', 'layouts/main.php', [
+            'title' => "Edit Profile",
+            'user' => $user,
+            'success' => $success,
+            'error' => $error
+        ]);
     }
 
     public function getProfile()
@@ -34,7 +50,6 @@ class EditProfileController
         return $this->userRepo->getUserById($_SESSION['user_id']);
     }
 
-
     public function deleteAccount($userId)
     {
         if (isset($_POST['delete_account'])) {
@@ -43,37 +58,38 @@ class EditProfileController
                 header("Location: /Login");
                 exit();
             } else {
-                $error = "Failed to delete account.";
-
-                return $error;
+                $_SESSION['profile_update_error'] = "Failed to delete account.";
+                return false;
             }
         }
+        return false;
     }
 
     public function changePassword($userId)
     {
-
         $newPassword = $_POST['password'] ?? '';
         $confirmPassword = $_POST['confirm_password'] ?? '';
+
         if ($newPassword !== $confirmPassword) {
-            $error = "New passwords do not match.";
+            $_SESSION['profile_update_error'] = "New passwords do not match.";
+            return false;
         } elseif (strlen($newPassword) < 8) {
-            $error = "Password length should be more than 7 characters.";
+            $_SESSION['profile_update_error'] = "Password length should be more than 7 characters.";
+            return false;
         } else {
             if ($this->userRepo->changePassword($userId, $newPassword)) {
-                $success = "Password updated successfully!";
+                $_SESSION['profile_update_success'] = "Password updated successfully!";
                 header("Location: /profile");
-                return $success;
+                exit();
             } else {
-                $error = "Failed to update password.";
-                return $error;
+                $_SESSION['profile_update_error'] = "Failed to update password.";
+                return false;
             }
         }
     }
 
     public function changeImage($userId)
     {
-
         try {
             $file = $_FILES['image'];
             $fileName = basename($file['name']);
@@ -82,10 +98,11 @@ class EditProfileController
             $maxFileSize = 5 * 1024 * 1024;
 
             if (!in_array($fileExt, $allowedExtensions)) {
-                $error = "Only JPG, JPEG, PNG files are allowed.";
+                $_SESSION['profile_update_error'] = "Only JPG, JPEG, PNG files are allowed.";
+                return false;
             } elseif ($file['size'] > $maxFileSize) {
-                $error = "File size must be less than 5MB.";
-                return $error;
+                $_SESSION['profile_update_error'] = "File size must be less than 5MB.";
+                return false;
             } else {
                 $newFileName = uniqid('', true) . '.' . $fileExt;
                 $uploadDir = 'uploads/';
@@ -96,49 +113,53 @@ class EditProfileController
 
                 if (move_uploaded_file($file['tmp_name'], "{$uploadDir}{$newFileName}")) {
                     $oldImage = $this->userRepo->updateImage($userId, $newFileName);
-                    $success = "Profile image updated successfully!";
+                    $_SESSION['profile_update_success'] = "Profile image updated successfully!";
                     header("Location: /profile");
-                    return $success;
+                    exit();
                 } else {
-                    $error = "Failed to upload image.";
-                    return $error;
+                    $_SESSION['profile_update_error'] = "Failed to upload image.";
+                    return false;
                 }
             }
         } catch (Exception $e) {
-            $error = "An error occurred: " . $e->getMessage();
-            return $error;
+            $_SESSION['profile_update_error'] = "An error occurred: " . $e->getMessage();
+            return false;
         }
     }
 
     public function updateProfile($userId)
     {
-        $name = $_POST['name'];
-        $title = $_POST['title'];
-        $age = $_POST['age'];
-        $email = $_POST['email'];
-        $bio = $_POST['bio'];
+        $name = $_POST['name'] ?? '';
+        $title = $_POST['title'] ?? '';
+        $age = $_POST['age'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $bio = $_POST['bio'] ?? '';
         $location = $_POST['location'] ?? 'Palestine';
 
         $stmt = $this->db->connection->prepare("SELECT * FROM users WHERE email = :email AND id != :id");
         $stmt->execute(['email' => $email, 'id' => $userId]);
 
         if (!$name || !$age || !$email) {
-            $error = "Name, age, and email are required fields.";
-            return $error;
+            $_SESSION['profile_update_error'] = "Name, age, and email are required fields.";
+            return false;
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $error = "Invalid email format.";
-            return $error;
+            $_SESSION['profile_update_error'] = "Invalid email format.";
+            return false;
         } elseif ($stmt->fetch()) {
-            $error = "Email already registered by another user.";
-            return $error;
+            $_SESSION['profile_update_error'] = "Email already registered by another user.";
+            return false;
         } elseif ($age > 80 || $age < 18) {
-            $error = "The age must be between 18 and 80.";
-            return $error;
+            $_SESSION['profile_update_error'] = "The age must be between 18 and 80.";
+            return false;
         } else {
-            $this->userRepo->updateUser(userId: $userId, name: $name, title: $title, age: $age, email: $email, bio: $bio, location: $location);
-            $success = "Profile updated successfully!";
-            header("Location: /profile");
-            return $success;
+            if ($this->userRepo->updateUser($userId, $name, $title, $age, $email, $bio, $location)) {
+                $_SESSION['profile_update_success'] = "Profile updated successfully!";
+                header("Location: /profile");
+                exit();
+            } else {
+                $_SESSION['profile_update_error'] = "Failed to update profile.";
+                return false;
+            }
         }
     }
 
@@ -160,19 +181,23 @@ class EditProfileController
             $this->changePassword($userId);
         }
     }
+
     public function getSuccessMessage()
     {
-        if (isset($_SESSION['profile_update_success'])) {
+        $success = '';
+        if (isset($_SESSION['profile_update_success']) && !empty($_SESSION['profile_update_success'])) {
             $success = $_SESSION['profile_update_success'];
-            unset($_SESSION['profile_update_success']);
+            $_SESSION['profile_update_success'] = '';
         }
         return $success;
     }
+
     public function getErrorMessage()
     {
-        if (isset($_SESSION['profile_update_error'])) {
+        $error = '';
+        if (isset($_SESSION['profile_update_error']) && !empty($_SESSION['profile_update_error'])) {
             $error = $_SESSION['profile_update_error'];
-            unset($_SESSION['profile_update_error']);
+            $_SESSION['profile_update_error'] = '';
         }
         return $error;
     }

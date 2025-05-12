@@ -1,26 +1,46 @@
 <?php
 
-
 namespace App\Controllers;
+
+use App\Core\BaseController;
+use App\Models\PostRepository;
 
 use PDO;
 
-
-
-class CategoryController
+class CategoryController extends BaseController
 {
-    private $db;
-    private $postRepo;
 
-    public function __construct($db, $postRepo)
+    public function __construct()
     {
-        $this->db = $db;
-        $this->postRepo = $postRepo;
+        parent::__construct();
+        $this->postRepo = new PostRepository($this->db);
     }
 
-    public function getCurrentCategory()
+    public function show()
     {
-        return $_GET['category'] ?? "";
+        $currentCategory = $this->getCurrentCategory();
+        $postsData = $this->getPaginatedPosts($currentCategory);
+
+        $currentCategory = $this->getCurrentCategory();
+        $categories = $this->postRepo->getAllCategories();
+        $pageTitle = $this->getPageTitle($currentCategory);
+
+        echo $this->view->renderWithLayout('category.view.php', 'layouts/main.php', [
+            'title' => "Category",
+            'posts' => $postsData['posts'],
+            'totalPages' => $postsData['totalPages'],
+            'currentPage' => $postsData['currentPage'],
+            'currentCategory' => $currentCategory
+        ]);
+    }
+    public function handle()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /home');
+            exit();
+        }
+
+        $this->show();
     }
 
     public function getImagePath()

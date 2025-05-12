@@ -3,15 +3,26 @@
 
 namespace App\Controllers;
 
+use App\Core\BaseController;
 
 
 
-class PostController
+
+class PostController extends BaseController
 {
-    private $db;
-    private $postRepo;
 
 
+
+
+    public function show()
+    {
+
+        echo $this->view->renderWithLayout('Posts.view.php', 'layouts/main.php', [
+            'title' => 'Posts - Altibbi',
+
+            'postData' => $this->postData
+        ]);
+    }
 
     public function handleRequest()
     {
@@ -42,13 +53,23 @@ class PostController
         }
     }
 
+
+
     public function deletePost($postId)
     {
-        if ($postId !== false) {
-            $this->postRepo->removePost($postId);
-            header("Location: /posts");
-            exit();
-        }
+        // Delete likes associated with the post
+        $stmt = $this->db->connection->prepare("DELETE FROM post_likes WHERE post_id = ?");
+        $stmt->execute([$postId]);
+
+        // Delete comments associated with the post
+        $stmt = $this->db->connection->prepare("DELETE FROM comments WHERE post_id = ?");
+        $stmt->execute([$postId]);
+
+        // Delete the post itself
+        $stmt = $this->db->connection->prepare("DELETE FROM posts WHERE id = ?");
+        $stmt->execute([$postId]);
+
+        return $stmt->rowCount() > 0;
     }
 
     public function createSlug($title)

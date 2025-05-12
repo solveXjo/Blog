@@ -2,15 +2,15 @@
 
 namespace App\Controllers;
 
+use App\Core\BaseController;
+
 
 require_once 'src/app/controllers/Posts.php';
 
 
-class SinglePostController
+class SinglePostController extends BaseController
 {
-    private $postRepo;
-    private $userRepo;
-    private $db;
+
 
 
 
@@ -27,6 +27,16 @@ class SinglePostController
         }
 
         return $postId;
+    }
+    public function show()
+    {
+
+        echo $this->view->renderWithLayout('single-post.view.php', 'layouts/main.php', [
+            'title' => 'Post - Altibbi',
+            'page Title' => "post",
+
+            'postData' => $this->postData
+        ]);
     }
     // public function getSinglePost($postId)
     // {

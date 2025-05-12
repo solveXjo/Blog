@@ -3,22 +3,43 @@
 
 namespace App\Controllers;
 
-use App\Core\Database;
+use App\Core\BaseController;
 use App\Models\PostRepository;
 use App\Models\UserRepository;
 
-
-class CommentController
+class CommentController extends BaseController
 {
-    private $postRepo;
-    private $userRepo;
-    private $db;
+    protected $postRepo;
+    protected $userRepo;
+    protected $db;
 
-    public function __construct(Database $db, PostRepository $postRepo, UserRepository $userRepo)
+    public function __construct()
     {
-        $this->db = $db;
-        $this->postRepo = $postRepo;
-        $this->userRepo = $userRepo;
+        parent::__construct();
+        $this->postRepo = new PostRepository($this->db);
+        $this->userRepo = new UserRepository($this->db);
+    }
+
+    public function show()
+    {
+        $commentController = new CommentController();
+        $commentController->processRequest();
+
+        $postId = $commentController->getPostId();
+        $userId = $commentController->getUserId();
+        $userInfo = $commentController->getUserInfo($userId);
+        $comments = $commentController->getAllComments($postId);
+        $commentCount = $commentController->getCommentCount($comments);
+
+        echo $this->view->renderWithLayout('comment.view.php', 'layouts/main.php', [
+            "title" => "Comment -Altibbi",
+            'postData' => $this->postData,
+            'postId' => $postId,
+            'userId' => $userId,
+            'userInfo' => $userInfo,
+            'comments' => $comments,
+            'commentCount' => $commentCount
+        ]);
     }
 
     public function getUserId()

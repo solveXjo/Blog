@@ -1,51 +1,58 @@
 <?php
 
+namespace App\Core;
+
 class Router
 {
     protected $routes = [];
+    protected $controllersNamespace = 'App\\Controllers\\';
+
     public function getRoutes(): array
     {
         return $this->routes;
     }
-    public function addRoute(string $uri, string $viewPath, bool $exactMatch = true): void
+
+    public function addRoute(string $method, string $uri, string $controller, string $action): void
     {
-        $this->routes[] = [
-            'uri' => $uri,
-            'view' => $viewPath,
-            'exact' => $exactMatch
+        $this->routes[$method][$uri] = [
+            'controller' => $controller,
+            'action' => $action
         ];
     }
 
-    public function addDynamicRoute(string $prefix, string $viewPath, string $paramName): void
+    public function addDynamicRoute(string $method, string $prefix, string $controller, string $action, string $paramName): void
     {
-        $this->routes[] = [
-            'prefix' => $prefix,
-            'view' => $viewPath,
-            'param' => $paramName,
-            'dynamic' => true
+        $this->routes[$method]['dynamic'][$prefix] = [
+            'controller' => $controller,
+            'action' => $action,
+            'param' => $paramName
         ];
     }
 
-    public function route(string $uri): void
+    public function route(string $uri, string $method = 'GET'): void
     {
-        foreach ($this->routes as $route) {
-            if (isset($route['exact']) && $route['exact'] && $route['uri'] === $uri) {
-                $this->loadView($route['view']);
-                return;
-            }
+        $method = strtoupper($method);
+
+        if (isset($this->routes[$method][$uri])) {
+            $this->callAction(
+                $this->routes[$method][$uri]['controller'],
+                $this->routes[$method][$uri]['action']
+            );
+            return;
         }
 
-        foreach ($this->routes as $route) {
-            if (isset($route['dynamic']) && $route['dynamic'] && str_starts_with($uri, $route['prefix'])) {
-                $paramValue = substr($uri, strlen($route['prefix']));
-                if (!empty($paramValue)) {
-                    $_GET[$route['param']] = $paramValue;
-                    $this->loadView($route['view']);
-                    return;
+        if (isset($this->routes[$method]['dynamic'])) {
+            foreach ($this->routes[$method]['dynamic'] as $prefix => $route) {
+                if (str_starts_with($uri, $prefix)) {
+                    $paramValue = substr($uri, strlen($prefix));
+                    if (!empty($paramValue)) {
+                        $_GET[$route['param']] = $paramValue;
+                        $this->callAction($route['controller'], $route['action']);
+                        return;
+                    }
                 }
             }
         }
-
 
         if (str_starts_with($uri, "/post/")) {
             $postSegment = substr($uri, strlen("/post/"));
@@ -54,29 +61,28 @@ class Router
 
             if (is_numeric($postId)) {
                 $_GET["id"] = $postId;
-                $this->loadView(__DIR__ . '/' . '../../app/views/single-post.view.php');
+                $this->callAction('PostController', 'show');
                 return;
             }
         }
 
-        $this->loadView('app/views/errors/404.view.php');
+        $this->callAction('ErrorController', 'notFound');
     }
 
-    public function loadView(string $viewPath): void
+    protected function callAction(string $controller, string $action): void
     {
-        if (!str_starts_with($viewPath, '/')) {
-            $viewPath = ltrim($viewPath, '/');
+        $controllerClass = $this->controllersNamespace . $controller;
+
+        if (!class_exists($controllerClass)) {
+            throw new \RuntimeException("Controller class {$controllerClass} not found");
         }
 
-        $viewPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $viewPath);
+        $controllerInstance = new $controllerClass();
 
-        if (file_exists($viewPath)) {
-            require $viewPath;
-        } else {
-            http_response_code(404);
-            echo "Error: View file not found at: " . htmlspecialchars($viewPath);
-            echo "<pre>Current working directory: " . getcwd() . "</pre>";
-            exit();
+        if (!method_exists($controllerInstance, $action)) {
+            throw new \RuntimeException("Method {$action} not found in controller {$controllerClass}");
         }
+
+        $controllerInstance->$action();
     }
 }

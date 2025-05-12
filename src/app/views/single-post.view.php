@@ -22,7 +22,6 @@ $userInfo = $userRepo->getUserById($userId);
 <head>
     <title>Single Post</title>
 
-    <?php include "src/Partials/head.php"; ?>
     <script type="application/json" class="swiper-config">
         {
             "loop": true,
@@ -54,7 +53,6 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 ?>
 
 <body class="gallery-single-page">
-    <?php include "src/Partials/nav.php"; ?>
     <main class="main">
         <section id="gallery-details" class="gallery-details section">
 
@@ -135,7 +133,6 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 
     </main>
 
-    <?php include "src/Partials/footer.php"; ?>
 
     <!-- Scroll Top -->
     <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="fa fa-arrow-up-short"></i></a>

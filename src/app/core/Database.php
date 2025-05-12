@@ -9,6 +9,7 @@ class Database
 {
     public $connection;
 
+
     public function __construct($config)
     {
         $dbConfig = $config['database'];

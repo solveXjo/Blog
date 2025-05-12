@@ -1,31 +1,4 @@
-<?php
-require_once 'vendor/autoload.php';
-
-
-
-
-$db = new App\Core\Database(require "src/config/config.php");
-
-$HomeController = new App\Controllers\HomeController;
-
-$postRepo = new App\Models\PostRepository($db);
-
-$HomeController->handlePostRequest();
-$allPosts = $postRepo->getAllPosts();
-$mostLikedPosts = $postRepo->getMostLikedPosts(5);
-
-
-
-?>
-
-<head>
-    <?php include 'src/Partials/head.php'; ?>
-    <title>Home - Altibbi</title>
-
-</head>
-
 <body>
-    <?php require_once 'src/Partials/nav.php'; ?>
     <main class="main">
         <!-- Slider Section -->
         <section id="slider" class="slider section dark-background">
@@ -230,7 +203,6 @@ $mostLikedPosts = $postRepo->getMostLikedPosts(5);
     </main>
 
 
-    <?php include 'src/Partials/footer.php'; ?>
 
 </body>
 

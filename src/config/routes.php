@@ -1,33 +1,30 @@
 <?php
 
-use App\Controllers\HomeController;
+use App\Core\Router;
 
-require "src/app/core/Router.php";
 $router = new Router();
 
-$router->addRoute('/',   'src/app/views/index.view.php');
-$router->addRoute('/home',   'src/app/views/index.view.php');
-$router->addRoute('/index',   'src/app/views/index.view.php');
-$router->addRoute('/signup', 'src/app/views/auth/signup.view.php');
-$router->addRoute('/posts', 'src/app/views/posts.view.php');
-$router->addRoute('/profile', 'src/app/views/profile.view.php');
-$router->addRoute('/Login', 'src/app/views/auth/Login.view.php');
-$router->addRoute('/about',  'src/app/views/about.view.php');
-$router->addRoute('/contact', 'src/app/views/contact.view.php');
-$router->addRoute('/profile_edit', 'src/app/views/profile_edit.view.php');
-$router->addRoute('/category', 'src/app/views/category.view.php');
+// Static routes
+$router->addRoute('GET', '/', 'HomeController', 'show');
+$router->addRoute('GET', '/home', 'HomeController', 'show');
+$router->addRoute('GET', '/index', 'HomeController', 'handle');
+$router->addRoute('GET', '/signup', 'AuthController', 'signup');
+$router->addRoute('POST', '/signup', 'AuthController', 'handleSignup');
+$router->addRoute('GET', '/posts', 'PostController', 'show');
 
-$router->addDynamicRoute('/category/', 'src/app/views/category.view.php', 'category');
-$router->addDynamicRoute('/comment/', 'src/app/views/comment.view.php', 'post_id');
+$router->addRoute('GET', '/profile', 'ProfileController', 'show');
+$router->addRoute('GET', '/login', 'AuthController', 'login');
+$router->addRoute('POST', '/login', 'AuthController', 'handleLogin');
+$router->addRoute('GET', '/about', 'AboutController', 'show');
+$router->addRoute('GET', '/contact', 'ContactController', 'show');
+$router->addRoute('GET', '/profile_edit', 'EditProfileController', 'show');
+$router->addRoute('POST', '/profile_edit', 'ProfileController', 'update');
+$router->addRoute('GET', '/category', 'CategoryController', 'show');
 
+// Dynamic routes
+$router->addDynamicRoute('GET', '/category/', 'CategoryController', 'show', 'category');
+$router->addDynamicRoute('GET', '/post/', 'SinglePostController', 'show', 'post_id');
 
-// $router->addRoute('/home', HomeController::class, 'home');
-
-// $routes = [
-//     '' => 'x/y/z/site/index',
-//     'login' => 'site/login',
-//     'register' => 'site/register',
-
-// ];
-
+$router->addDynamicRoute('GET', '/comment/', 'CommentController', 'show', 'post_id');
+$router->addDynamicRoute('POST', '/comment/', 'CommentController', 'show', 'post_id');
 return $router;

@@ -4,49 +4,47 @@ namespace App\Core;
 
 class View
 {
-    private $templatePath;
+    protected $path;
+    protected $data = [];
 
-    public function __construct($templatePath = 'app/views/')
+    public function __construct(string $path = 'src/app/views')
     {
-        $this->templatePath = trim($templatePath, '/');
+        $this->path = rtrim($path, '/') . '/';
     }
 
-    public function render($view, $data = [])
+    public function render(string $template, array $data = []): string
     {
-       $content = $this->renderData($view,$data);
-       return $this->renderLayout($content);
+        extract(array_merge($this->data, $data));
+
+        ob_start();
+        include $this->path . $template;
+        $content = ob_get_clean();
+
+        return $content;
     }
-    private function renderData($view,$data){
-        return "hello-world";
+
+    public function renderWithLayout(string $template, string $layout = 'layouts/main.php', array $data = []): string
+    {
+        $data = array_merge([
+            'title' => 'Default Title',
+            'page Title' => '',
+            'content' => ''
+        ], $data);
+
+        // First render the template to get content
+        $data['content'] = $this->render($template, $data);
+
+        // Then render the layout with all variables
+        return $this->render($layout, $data);
     }
-    private function renderLayout($content){
-        // $file = $this->templatePath . $template . '.php';
 
-        // if (!file_exists($file)) {
-        //     throw new \Exception("Template file $file not found.");
-        // }
+    public function __set($name, $value)
+    {
+        $this->data[$name] = $value;
+    }
 
-        // extract($data);
-
-        // ob_start();
-        // include $file;
-
-        // return ob_get_clean();
+    public function __get($name)
+    {
+        return $this->data[$name] ?? null;
     }
 }
-?>
-
-<html>
-    <head></head>
-    <body>
-        <header>
-
-        </header>
-        <content>
-            $content
-        </content>
-        <footer>
-
-        </footer>
-    </body>
-</html>

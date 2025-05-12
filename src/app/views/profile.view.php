@@ -1,36 +1,10 @@
-<?php
 
-require_once   'vendor/autoload.php';
-
-use App\Controllers\ProfileController;
-use App\Core\Database;
-use App\Models\UserRepository;
-
-$config = require   'src/config/config.php';
-$db = new Database($config);
-
-$userRepo = new UserRepository($db);
-
-$profileController = new ProfileController($db, $userRepo);
-
-// Fetch User Data
-$user = $profileController->getProfile();
-
-// Handle Profile Update
-$profileController->handleProfileUpdate($user['id']);
-
-?>
 
 <head>
-    <?php include 'src/partials/head.php'; ?>
-    <title><?= htmlspecialchars($user['name'] ?? 'User') ?> | Profile</title>
 
 </head>
 
-<body>
 
-    <?php require 'src/partials/nav.php'; ?>
-    <?php include "src/partials/pageTitle.php"; ?>
 
 
 
@@ -168,9 +142,3 @@ $profileController->handleProfileUpdate($user['id']);
         </section><!-- /Author Profile Section -->
 
     </main>
-
-    <?php require 'src/partials/footer.php'; ?>
-
-</body>
-
-</html>

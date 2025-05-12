@@ -1,33 +1,4 @@
-<?php
-
-use App\Controllers\EditProfileController;
-
-use App\Core\Database;
-
-use App\Models\UserRepository;
-
-
-
-$db = new Database(require 'src/config/config.php');
-
-
-$userRepo = new UserRepository($db);
-
-$EP = new EditProfileController($db, $userRepo);
-
-$user = $EP->getProfile();
-
-
-$EP->handleProfileUpdate($user['id']);
-
-$success = $EP->getSuccessMessage();
-$error = $EP->getErrorMessage();
-?>
-
-
-
 <head>
-    <title><?= htmlspecialchars($user['name'] ?? 'User') ?> | Profile</title>
     <style>
         .profile-header {
             background-color: var(--card-color);
@@ -202,9 +173,6 @@ $error = $EP->getErrorMessage();
 </head>
 
 <body>
-    <?php require 'src/partials/nav.php'; ?>
-    <!-- <? //php include "Partials/pageTitle.php"; 
-            ?> -->
     <div class="container">
         <?php if (!empty($success)): ?>
             <div class="alert alert-success"><?= $success ?></div>
@@ -219,7 +187,7 @@ $error = $EP->getErrorMessage();
                     <h3>Profile Picture</h3>
                     <form method="post" enctype="multipart/form-data" class="image-upload-form">
                         <label for="image" class="btn" style="margin-top: 70px;">
-                        <img src="uploads/<?= !empty($user['image_path']) ? htmlspecialchars($user['image_path']) : 'default.png' ?>" style="max-width: 120;" />
+                            <img src="uploads/<?= !empty($user['image_path']) ? htmlspecialchars($user['image_path']) : 'src/uploads/default.png' ?>" style="max-width: 120px;" />
                         </label>
                         <input type="file" id="image" name="image" accept="image/*" style="display: none;"
                             onchange="this.form.submit()">
@@ -557,8 +525,6 @@ $error = $EP->getErrorMessage();
             </div>
         </div>
     </div>
-
-    <?php require 'Partials/footer.php'; ?>
 
 
 

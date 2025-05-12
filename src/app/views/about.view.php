@@ -3,8 +3,7 @@
 </head>
 
 <body>
-  <?php include 'src/Partials/nav.php'; ?>
-  <?php include 'src/Partials/pageTitle.php'; ?>
+
   <!-- About Section -->
   <section id="about" class="about section">
 
@@ -58,7 +57,6 @@
   </section><!-- /About Section -->
 
 
-  <?php include 'src/Partials/footer.php'; ?>
 </body>
 
 </html>

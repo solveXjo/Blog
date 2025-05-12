@@ -2,29 +2,31 @@
 
 namespace App\Controllers;
 
-use App\Core\Database;
 use App\Models\UserRepository;
 
 use Exception;
+use App\Core\BaseController;
 
 
 
-class ProfileController
+
+class ProfileController extends BaseController
 {
-    private $db;
-    private $userRepo;
 
     private $errors = [];
     private $success = [];
     private $errorMessage = '';
     private $successMessage = '';
 
-    public function __construct(Database $db, UserRepository $userRepo)
-    {
-        $this->db = $db;
-        $this->userRepo = $userRepo;
-    }
+    protected $db;
 
+    protected $userRepo;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->userRepo = new UserRepository($this->db);
+    }
     public function getUser()
     {
         if (!isset($_SESSION['user_id'])) {
@@ -48,6 +50,18 @@ class ProfileController
         }
     }
 
+    public function show()
+    {
+        $profileController = new ProfileController();
+        $user = $this->getProfile();
+
+        echo $this->view->renderWithLayout('profile.view.php', 'layouts/main.php', [
+            'title' => htmlspecialchars($user['name']) . "'s Profile",
+            'user' => $user,
+            'profileController' => $profileController,
+
+        ]);
+    }
     public function changePassword($userId)
     {
 

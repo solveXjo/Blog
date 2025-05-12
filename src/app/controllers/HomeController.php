@@ -2,17 +2,18 @@
 
 namespace App\Controllers;
 
-use App\Core\Database;
+
+
+use App\Core\BaseController;
+
 use App\Models\PostRepository;
+use App\Core\Database;
 
 
-use App\Core\View;
-
-class HomeController
+class HomeController extends BaseController
 {
 
-    private $db;
-    private $postRepo;
+
 
 
     // public function render($name, $data = [])
@@ -26,7 +27,42 @@ class HomeController
     //     $content = $this->render('toosososasosa', []);
     // }
 
+    protected $db;
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function show()
+    {
+        $HomeController = new HomeController;
+        $config = require 'src/config/config.php';
+        $db = new Database($config);
+
+        $postRepo = new PostRepository($db);
+
+        $HomeController->handlePostRequest();
+        $allPosts = $postRepo->getAllPosts();
+        $mostLikedPosts = $postRepo->getMostLikedPosts(5);
+        echo $this->view->renderWithLayout('index.view.php', 'layouts/main.php', [
+            'title' => 'Home - Altibbi',
+            'postData' => $this->postData,
+            'HomeController' => $HomeController,
+            'allPosts' => $allPosts,
+            'mostLikedPosts' => $mostLikedPosts
+        ]);
+    }
+
+    public function handle()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /home');
+            exit();
+        }
+
+        $this->show();
+    }
     public function getUser()
     {
         if (!isset($_SESSION['user_id'])) {
@@ -88,7 +124,7 @@ class HomeController
                 'description' => $description
             ]);
 
-
+            $this->postData = [];
             header("Location: /posts");
             exit();
         }

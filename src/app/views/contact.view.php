@@ -1,24 +1,13 @@
 <?php
+require 'vendor/autoload.php';
 
-use App\Core\Database;
-use App\Controllers\ContactController;
 
-$db = new Database(require 'src/config/config.php');
-$contactController = new ContactController();
+$contactController = new App\Controllers\ContactController();
 $contactController->handleContactForm();
 ?>
 
-<head>
-    <?php include "src/Partials/head.php"; ?>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <title>Contact - Altibbi</title>
-</head>
 
 <body class="contact-page">
-    <?php
-    include "src/Partials/nav.php";
-    include "src/Partials/pageTitle.php";
-    ?>
 
     <main class="main">
         <div class="title-wrapper mt-3">
@@ -87,6 +76,7 @@ $contactController->handleContactForm();
                                         <div class="sent-message">Your message has been sent. Thank you!</div>
                                     </div>
                                     <div class="g-recaptcha my-3" data-sitekey="<?php echo $contactController->getSiteKey(); ?>"></div>
+                                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-primary">Submit Message</button>
                                     </div>
@@ -107,7 +97,6 @@ $contactController->handleContactForm();
         </section>
     </main>
 
-    <?php include "src/Partials/footer.php"; ?>
 </body>
 
 </html>

@@ -7,32 +7,27 @@ require 'vendor/autoload.php';
 $config = require 'src/config/config.php';
 $db = new App\Core\Database($config);
 $postRepo = new App\Models\PostRepository($db);
-$catController = new App\Controllers\CategoryController($db, $postRepo);
+$catController = new App\Controllers\CategoryController();
 
+
+$parser = new Parsedown();
 
 
 $postController = new  App\Controllers\PostController();
 
-$currentCategory = $catController->getCurrentCategory();
 $categories = $postRepo->getAllCategories();
 $pageTitle = $catController->getPageTitle($currentCategory);
 
 
-$paginationData = $catController->getPaginatedPosts($currentCategory);
-$posts = $paginationData['posts'];
-$totalPages = $paginationData['totalPages'];
-$currentPage = $paginationData['currentPage'];
 
 $merge_query = [$catController, 'mergeQuery'];
 ?>
 
 <head>
-    <?php include 'src/Partials/head.php' ?>
     <title><?= htmlspecialchars($pageTitle) ?></title>
 </head>
 
 <body class="category-page">
-    <?php include 'src/Partials/nav.php' ?>
 
     <main class="main">
         <div class="container">
@@ -57,7 +52,7 @@ $merge_query = [$catController, 'mergeQuery'];
                                         <div class="col-lg-6">
                                             <article class="position-relative h-100">
                                                 <div class="post-img position-relative overflow-hidden">
-                                                    <img src="src/<?= !empty($post['image_path']) ? htmlspecialchars($post['image_path']) : 'public/images/download.png' ?>"
+                                                    <img src="src/<?= !empty($post['image_path']) ? $post['image_path'] : 'public/images/download.png' ?>"
                                                         class="img-fluid" alt="" style="max-width: 460px;">
                                                     <?php if (!empty($post['created_at'])): ?>
                                                         <span class="post-date"><?= date("F j", strtotime($post['created_at'])) ?></span>
@@ -66,8 +61,11 @@ $merge_query = [$catController, 'mergeQuery'];
 
                                                 <div class="post-content d-flex flex-column">
                                                     <?php if (!empty($post['id']) && !empty($post['caption'])): ?>
-                                                        <a href="/post/<?= $post['id'] ?>/<?= $postController->createSlug($post['caption']) ?>">
-                                                            <h3 class="post-title"><?= htmlspecialchars($post['caption']) ?></h3>
+                                                        <a href="/post/<?= $post['id'] ?>">
+                                                            <h3 class="post-title">
+                                                                <?= $parser->text($post['caption']) ?>
+                                                            </h3>
+
                                                         </a>
                                                     <?php endif; ?>
                                                     <div class="meta d-flex align-items-center">
@@ -161,7 +159,6 @@ $merge_query = [$catController, 'mergeQuery'];
         </div>
     </main>
 
-    <?php include 'src/Partials/footer.php' ?>
 </body>
 
 </html>

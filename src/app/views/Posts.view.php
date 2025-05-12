@@ -1,9 +1,6 @@
 <?php
-require_once   'vendor/autoload.php';
-require_once 'src/app/controllers/PostController.php';
+require_once 'vendor/autoload.php';
 
-use App\Core\Database;
-use App\Controllers\PostController;
 
 $config = require 'src/config/config.php';
 $db = new App\Core\Database($config);
@@ -16,7 +13,7 @@ $PostController->handleRequest();
 $posts = $postRepo->getAllPosts();
 $getMostRecentPosts = $postRepo->getRecentPosts(5);
 
-require_once 'vendor/autoload.php';
+
 
 $parser = new Parsedown();
 ?>
@@ -24,7 +21,6 @@ $parser = new Parsedown();
 <title>Posts</title>
 
 <head>
-  <?php include 'src/Partials/head.php'; ?>
   <title>SocialApp</title>
   <script>
     $(document).ready(function() {
@@ -55,9 +51,6 @@ $parser = new Parsedown();
 
 
 <body>
-  <?php include 'src/Partials/nav.php'; ?>
-  <?php include 'src/Partials/pageTitle.php'; ?>
-
 
 
 
@@ -75,14 +68,14 @@ $parser = new Parsedown();
                   <article class="article p-5 mb-3">
                     <?php if (!empty($post['image_path'])) : ?>
                       <div class="post-img">
-                        <a href="/post/<?= $post['id'] ?>-<?= $PostController->createSlug($post['caption']) ?>">
+                        <a href="/post/<?= $post['id'] ?>">
                           <img src="src/<?= $post['image_path'] ?>" alt="Post image" class="img-fluid" margin-left: 15;>
                         </a>
                       </div>
                     <?php endif; ?>
 
                     <h2 class="title">
-                      <a class="single-post-col" href="/post/<?= $post['id'] ?>-<?= $PostController->createSlug($post['caption']) ?>">
+                      <a class="single-post-col" href="/post/<?= $post['id'] ?>">
                         <?= $parser->text($post['caption']) ?>
                       </a>
                     </h2>

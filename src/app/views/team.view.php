@@ -26,7 +26,7 @@
 
 
                             <img src="src/public/assets/img/person/<?= htmlspecialchars($member['image']) ?>"
-                                class="img-fluid" alt="<?= htmlspecialchars($member['name']) ?>" style="width: 200;">
+                                class="img-fluid" alt="<?= htmlspecialchars($member['name']) ?>" style="width: 200px;">
                             <div class="member-info flex-grow-1">
                                 <h4><?= htmlspecialchars($member['name']) ?></h4>
                                 <span><?= htmlspecialchars($member['title']) ?></span>
