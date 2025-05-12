@@ -5,22 +5,35 @@ namespace App\Controllers;
 
 use App\Core\BaseController;
 
+use App\Core\Database;
+
+use app\Models\PostRepository;
 
 
 
 class PostController extends BaseController
 {
 
-
-
-
     public function show()
     {
+        $config = require 'src/config/config.php';
+        $db = new Database($config);
+
+
+        $postRepo = new PostRepository($db);
+
+        $PostController = $this->handleRequest();
+        $posts = $postRepo->getAllPosts();
+        $getMostRecentPosts = $postRepo->getRecentPosts(5);
+
 
         echo $this->view->renderWithLayout('Posts.view.php', 'layouts/main.php', [
             'title' => 'Posts - Altibbi',
 
-            'postData' => $this->postData
+            'postData' => $this->postData,
+            'PostController' => $PostController,
+            'posts' => $posts,
+            'getMostRecentPosts' => $getMostRecentPosts
         ]);
     }
 

@@ -135,6 +135,7 @@ class EditProfileController extends BaseController
         $email = $_POST['email'] ?? '';
         $bio = $_POST['bio'] ?? '';
         $location = $_POST['location'] ?? 'Palestine';
+        $password = $_POST['password'];
 
         $stmt = $this->db->connection->prepare("SELECT * FROM users WHERE email = :email AND id != :id");
         $stmt->execute(['email' => $email, 'id' => $userId]);
@@ -152,7 +153,7 @@ class EditProfileController extends BaseController
             $_SESSION['profile_update_error'] = "The age must be between 18 and 80.";
             return false;
         } else {
-            if ($this->userRepo->updateUser($userId, $name, $title, $age, $email, $bio, $location)) {
+            if ($this->userRepo->updateUser($userId, $name, $title, $age, $email, $password, $bio, $location)) {
                 $_SESSION['profile_update_success'] = "Profile updated successfully!";
                 header("Location: /profile");
                 exit();

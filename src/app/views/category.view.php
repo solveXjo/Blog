@@ -52,7 +52,7 @@ $merge_query = [$catController, 'mergeQuery'];
                                         <div class="col-lg-6">
                                             <article class="position-relative h-100">
                                                 <div class="post-img position-relative overflow-hidden">
-                                                    <img src="src/<?= !empty($post['image_path']) ? $post['image_path'] : 'public/images/download.png' ?>"
+                                                    <img src="<?= !empty($post['image_path']) ? $post['image_path'] : 'src/public/images/download.png' ?>"
                                                         class="img-fluid" alt="" style="max-width: 460px;">
                                                     <?php if (!empty($post['created_at'])): ?>
                                                         <span class="post-date"><?= date("F j", strtotime($post['created_at'])) ?></span>

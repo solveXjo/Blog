@@ -1,12 +1,3 @@
-<?php
-require 'vendor/autoload.php';
-
-
-$contactController = new App\Controllers\ContactController();
-$contactController->handleContactForm();
-?>
-
-
 <body class="contact-page">
 
     <main class="main">

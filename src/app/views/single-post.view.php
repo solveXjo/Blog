@@ -67,7 +67,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 
                     <div class="row justify-content-between">
                         <div class="page-title" data-aos="fade">
-                            <img src="<?= $singlepost["image_path"] ? 'src/' . $singlepost["image_path"] : '' ?>" style="max-height: 500px;">
+                            <img src="<?= $singlepost["image_path"] ? $singlepost["image_path"] : '' ?>" style="max-height: 500px;">
                             <div class="heading">
                                 <div class="row d-flex justify-content-center text-center">
                                     <div class="col-lg-8">

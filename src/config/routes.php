@@ -4,7 +4,6 @@ use App\Core\Router;
 
 $router = new Router();
 
-// Static routes
 $router->addRoute('GET', '/', 'HomeController', 'show');
 $router->addRoute('GET', '/home', 'HomeController', 'show');
 $router->addRoute('GET', '/index', 'HomeController', 'handle');
@@ -21,7 +20,6 @@ $router->addRoute('GET', '/profile_edit', 'EditProfileController', 'show');
 $router->addRoute('POST', '/profile_edit', 'ProfileController', 'update');
 $router->addRoute('GET', '/category', 'CategoryController', 'show');
 
-// Dynamic routes
 $router->addDynamicRoute('GET', '/category/', 'CategoryController', 'show', 'category');
 $router->addDynamicRoute('GET', '/post/', 'SinglePostController', 'show', 'post_id');
 

@@ -28,14 +28,16 @@ class ContactController extends BaseController
 
     public function show()
     {
-        error_log("Showing contact form. Errors: " . print_r($this->errors, true));
 
+        $contactController = new ContactController();
+        $contactController->handleContactForm();
         echo $this->view->renderWithLayout('contact.view.php', 'layouts/main.php', [
             'title' => 'Contact - Altibbi',
             'siteKey' => $this->siteKey,
             'successMessage' => $this->successMessage,
             'errorMessage' => $this->errorMessage,
-            'postData' => $this->postData
+            'postData' => $this->postData,
+            'contactController' => $contactController
         ]);
     }
 
