@@ -28,13 +28,6 @@ class PostRepository
         return $posts;
     }
 
-    public function createSlug($title)
-    {
-        $slug = strtolower($title);
-        $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
-        $slug = trim($slug, '-');
-        return $slug;
-    }
 
     public function getPostById($postId)
     {
@@ -43,6 +36,8 @@ class PostRepository
         $stmt->execute([$postId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+
     public function getPostByCaption($caption)
     {
         $query = "SELECT posts.*, users.name FROM posts INNER JOIN users ON posts.user_id = users.id WHERE posts.caption = ?";
@@ -51,6 +46,159 @@ class PostRepository
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    protected function getUserById($userId)
+    {
+        $query = "SELECT name FROM users WHERE id = :user_id LIMIT 1";
+        $stmt = $this->db->connection->prepare($query);
+        $stmt->execute(['user_id' => $userId]);
+        return $stmt->fetch();
+    }
+    public function createPost($userId, $caption, $description, $quote, $category, $imagePath = null)
+    {
+        // Get user name
+        $user = $this->getUserById($userId);
+        $name = $user['name'];
+
+        $query = "INSERT INTO posts 
+                 (user_id, name, caption, description, quote, category, image_path, likes, created_at) 
+                 VALUES 
+                 (:user_id, :name, :caption, :description, :quote, :category, :image_path, 0, NOW())";
+
+        $stmt = $this->db->connection->prepare($query);
+        $stmt->execute([
+            'user_id' => $userId,
+            'name' => $name,
+            'caption' => $caption,
+            'description' => $description,
+            'quote' => $quote,
+            'category' => $category,
+            'image_path' => $imagePath
+        ]);
+
+        return $this->db->connection->lastInsertId();
+    }
+
+
+    public function getPostBySlug($slug)
+    {
+        $statement = $this->db->connection->prepare("
+            SELECT *
+            FROM posts
+            WHERE slug = :slug
+        ");
+
+        $statement->execute(['slug' => $slug]);
+
+        return $statement->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function createSlug($title, $id = null)
+    {
+        // Convert title to slug
+        $slug = $this->convertTitleToSlug($title);
+
+        // Check if slug already exists
+        $statement = $this->db->connection->prepare("
+            SELECT COUNT(*) as count
+            FROM posts
+            WHERE slug = :slug
+            " . ($id ? "AND id != :id" : "") . "
+        ");
+
+        $params = ['slug' => $slug];
+        if ($id) {
+            $params['id'] = $id;
+        }
+
+        $statement->execute($params);
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        // If slug exists, append a number
+        if ($result['count'] > 0) {
+            $i = 1;
+            $originalSlug = $slug;
+
+            do {
+                $slug = $originalSlug . '-' . $i++;
+
+                $statement = $this->db->connection->prepare("
+                    SELECT COUNT(*) as count
+                    FROM posts
+                    WHERE slug = :slug
+                    " . ($id ? "AND id != :id" : "") . "
+                ");
+
+                $params = ['slug' => $slug];
+                if ($id) {
+                    $params['id'] = $id;
+                }
+
+                $statement->execute($params);
+                $result = $statement->fetch(PDO::FETCH_ASSOC);
+            } while ($result['count'] > 0);
+        }
+
+        return $slug;
+    }
+
+    public function convertTitleToSlug($str)
+    {
+        // Convert string to lowercase
+        $str = strtolower($str);
+
+        // Replace the spaces with hyphens
+        $str = str_replace(' ', '-', $str);
+
+        // Remove the special characters
+        $str = preg_replace('/[^a-z0-9\-]/', '', $str);
+
+        // Remove the consecutive hyphens
+        $str = preg_replace('/-+/', '-', $str);
+
+        // Trim hyphens from the beginning
+        // and ending of String
+        $str = trim($str, '-');
+
+        return $str;
+    }
+
+    public function updatePostSlug($id, $title)
+    {
+        // Generate slug from title
+        $slug = $this->createSlug($title, $id);
+
+        // Update post with new slug
+        $statement = $this->db->connection->prepare("
+            UPDATE posts
+            SET slug = :slug
+            WHERE id = :id
+        ");
+
+        $statement->execute([
+            'id' => $id,
+            'slug' => $slug
+        ]);
+
+        return $slug;
+    }
+
+    public function generateSlugsForAllPosts()
+    {
+        $statement = $this->db->connection->prepare("
+            SELECT id, caption
+            FROM posts
+            WHERE slug IS NULL OR slug = ''
+        ");
+
+        $statement->execute();
+        $posts = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($posts as $post) {
+            $this->updatePostSlug($post['id'], $post['caption']);
+        }
+
+        return count($posts);
+    }
     public function incrementLikes($postId)
     {
         $query = "SELECT liked FROM posts WHERE id = ?";

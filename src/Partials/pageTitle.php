@@ -43,6 +43,12 @@ function getPageDetails()
             'title' => 'Comment - Altibbi',
             'heading' => 'Comment',
             'breadcrumb' => 'Comment'
+        ],
+        'post' => [
+            'title' => 'post',
+            'heading' => 'post',
+            'breadcrumb' => 'post'
+
         ]
 
     ];

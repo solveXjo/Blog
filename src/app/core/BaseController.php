@@ -27,7 +27,6 @@ class BaseController
         $this->postData = $_POST ?? [];
     }
 
-    // Common methods can be added here
     public function getCurrentCategory(): string
     {
         return $_GET['category'] ?? '';

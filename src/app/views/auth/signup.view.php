@@ -1,14 +1,8 @@
 <?php
-require_once 'app/controllers/signup.php';
+require_once 'src/app/controllers/signup.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <?php include 'Partials/head.php'; ?>
-    <title>Signup</title>
-</head>
 
 <body>
     <div class="container">
@@ -18,7 +12,7 @@ require_once 'app/controllers/signup.php';
                     <div class="row no-gutters">
                         <div class="col-lg-7 form-section">
                             <div class="form-header">
-                                <img src="public/images/download.png" alt="Sign up icon">
+                                <img src="src/public/images/download.png" alt="Sign up icon">
                                 <h4>Create Your Account</h4>
                             </div>
 

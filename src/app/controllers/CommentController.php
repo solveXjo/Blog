@@ -7,6 +7,8 @@ use App\Core\BaseController;
 use App\Models\PostRepository;
 use App\Models\UserRepository;
 
+use App\Core\Route;
+
 class CommentController extends BaseController
 {
     protected $postRepo;
@@ -41,6 +43,8 @@ class CommentController extends BaseController
             'commentCount' => $commentCount
         ]);
     }
+
+    // #[Route('/comment', 'GET')]
 
     public function getUserId()
     {

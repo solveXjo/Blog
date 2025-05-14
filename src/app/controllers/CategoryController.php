@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Core\BaseController;
 use App\Models\PostRepository;
 
+use App\Core\Route;
 use PDO;
 
 class CategoryController extends BaseController

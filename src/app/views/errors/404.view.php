@@ -1,10 +1,7 @@
-<head>
-    <title>404 - Blogy Bootstrap Template</title>
-    <?php require_once 'Partials/head.php'; ?>
-</head>
+<?php require_once 'src/Partials/head.php'; ?>
 
 <body class="page-404">
-    <?php include 'Partials/nav.php'; ?>
+
     <main class="main">
 
         <!-- Error 404 Section -->
@@ -36,7 +33,6 @@
 
     </main>
 
-    <?php include 'Partials/footer.php'; ?>
 
 
 

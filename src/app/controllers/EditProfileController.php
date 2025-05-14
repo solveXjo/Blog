@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Core\BaseController;
 use App\Models\UserRepository;
+
+use App\Core\Route;
 use Exception;
 
 class EditProfileController extends BaseController
@@ -23,6 +25,9 @@ class EditProfileController extends BaseController
             $_SESSION['profile_update_error'] = '';
         }
     }
+
+    // #[Route('/profile_edit', 'GET')]
+
 
     public function show()
     {

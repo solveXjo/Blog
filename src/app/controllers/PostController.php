@@ -9,11 +9,12 @@ use App\Core\Database;
 
 use app\Models\PostRepository;
 
+use App\Core\Route;
 
 
 class PostController extends BaseController
 {
-
+    // #[Route('/posts', 'GET')]
     public function show()
     {
         $config = require 'src/config/config.php';
@@ -70,15 +71,14 @@ class PostController extends BaseController
 
     public function deletePost($postId)
     {
-        // Delete likes associated with the post
+        
         $stmt = $this->db->connection->prepare("DELETE FROM post_likes WHERE post_id = ?");
         $stmt->execute([$postId]);
 
-        // Delete comments associated with the post
+       
         $stmt = $this->db->connection->prepare("DELETE FROM comments WHERE post_id = ?");
         $stmt->execute([$postId]);
 
-        // Delete the post itself
         $stmt = $this->db->connection->prepare("DELETE FROM posts WHERE id = ?");
         $stmt->execute([$postId]);
 

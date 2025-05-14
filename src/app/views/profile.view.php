@@ -1,20 +1,6 @@
-<head>
-
-</head>
-
-
-
-
-
-
 <main class="main">
-
-
-
     <section id="author-profile" class="author-profile section">
-
         <div class="container" data-aos="fade-up" data-aos-delay="100">
-
             <div class="author-profile-1">
 
                 <div class="row">
@@ -23,7 +9,7 @@
                         <div class="author-card" data-aos="fade-up">
                             <div class="author-image">
                                 <label for="image" class="btn" style="margin-top: 70px;">
-                                    <img src="uploads/<?= !empty($user['image_path']) ? htmlspecialchars($user['image_path']) : 'default.png' ?>" />
+                                    <img src="uploads/<?= !empty($user['image_path']) ? htmlspecialchars($user['image_path']) : 'src/uploads/default.png' ?>" />
                                 </label>
 
                             </div>

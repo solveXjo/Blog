@@ -11,6 +11,9 @@ use PHPMailer\PHPMailer\Exception;
 
 
 
+use App\Core\Route;
+
+
 
 class ContactController extends BaseController
 {
@@ -25,6 +28,8 @@ class ContactController extends BaseController
     {
         parent::__construct();
     }
+
+    // #[Route('/contact', 'GET')]
 
     public function show()
     {

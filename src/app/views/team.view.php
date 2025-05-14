@@ -1,7 +1,14 @@
 <head>
-    <?php include "src/Partials/head.php";
-    require "src/app/controllers/team.php"
 
+    <?php include "src/Partials/head.php";
+
+    ?>
+
+    <?php
+
+
+    $team = new App\Controllers\Team;
+    $teamMembers = $team->getAllTeamMembers();
     ?>
 
 </head>

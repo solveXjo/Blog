@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Core\View;
 
-
+use App\Core\Route;
 
 class AboutController
 {
@@ -18,6 +18,7 @@ class AboutController
         $this->view = new View();
         $this->postData = $_POST ?? [];
     }
+    #[Route('/about', 'GET')]
 
     public function show()
     {

@@ -11,12 +11,7 @@ $SP = new App\Controllers\SinglePostController();
 
 $parser = new Parsedown();
 
-$postId = $SP->getPostId();
-$singlepost = $postRepo->getPostById($postId);
 
-$userId = $SP->getUserId($singlepost);
-
-$userInfo = $userRepo->getUserById($userId);
 ?>
 
 <head>

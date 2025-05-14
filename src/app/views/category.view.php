@@ -61,7 +61,7 @@ $merge_query = [$catController, 'mergeQuery'];
 
                                                 <div class="post-content d-flex flex-column">
                                                     <?php if (!empty($post['id']) && !empty($post['caption'])): ?>
-                                                        <a href="/post/<?= $post['id'] ?>">
+                                                        <a href="/post/<?= $post['id'] ?>-<?= urlencode(str_replace(' ', '-', $post['caption'])) ?>">
                                                             <h3 class="post-title">
                                                                 <?= $parser->text($post['caption']) ?>
                                                             </h3>

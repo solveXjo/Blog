@@ -1,7 +1,12 @@
 <?php
 
 
-$db = new Database(require 'config/config.php');
+// require_once 'src/app/controllers/AuthController.php';
+require_once 'src/Partials/head.php';
+
+use App\Core\Database;
+
+$db = new Database(require 'src/config/config.php');
 $invalid = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

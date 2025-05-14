@@ -45,17 +45,19 @@ $parser = new Parsedown();
           <div class="container">
             <?php if (count($posts) > 0) : ?>
               <?php foreach ($posts as $post) : ?>
+                <!-- <?= var_dump($post['id']); ?> -->
+
                 <article class="article p-5 mb-3">
                   <?php if (!empty($post['image_path'])) : ?>
                     <div class="post-img">
-                      <a href="/post/<?= $post['id'] ?>">
+                      <a href="/post/<?= $post['id'] ?>-<?= str_replace(' ', '-', $post['caption']) ?>">
                         <img src="<?= $post['image_path'] ?>" alt="Post image" class="img-fluid" margin-left: 15;>
                       </a>
                     </div>
                   <?php endif; ?>
 
                   <h2 class="title">
-                    <a class="single-post-col" href="/post/<?= $post['id'] ?>">
+                    <a class="single-post-col" href="/post/<?= $post['id'] ?>-<?= str_replace(' ', '-', $post['caption']) ?>">
                       <?= $parser->text($post['caption']) ?>
                     </a>
                   </h2>

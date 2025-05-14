@@ -2,10 +2,13 @@
 
 namespace App\Core;
 
+use App\Controllers\ErrorController;
+use App\Controllers\SinglePostController;
+
 class Router
 {
     protected $routes = [];
-    protected $controllersNamespace = 'App\\Controllers\\';
+    protected $controllersNamespace = '';
 
     public function getRoutes(): array
     {
@@ -29,6 +32,14 @@ class Router
         ];
     }
 
+    public function addIdSlugRoute(string $method, string $prefix, string $controller, string $action): void
+    {
+        $this->routes[$method]['idslug'][$prefix] = [
+            'controller' => $controller,
+            'action' => $action
+        ];
+    }
+
     public function route(string $uri, string $method = 'GET'): void
     {
         $method = strtoupper($method);
@@ -39,6 +50,27 @@ class Router
                 $this->routes[$method][$uri]['action']
             );
             return;
+        }
+
+        if (isset($this->routes[$method]['idslug'])) {
+            foreach ($this->routes[$method]['idslug'] as $prefix => $route) {
+                if (str_starts_with($uri, $prefix)) {
+                    $path = substr($uri, strlen($prefix));
+
+                    // Extract ID from the path (everything before first dash)
+                    preg_match('/^(\d+)/', $path, $matches);
+
+                    if (!empty($matches[1])) {
+                        $_GET['id'] = $matches[1];
+
+                        $this->callAction(
+                            $route['controller'],
+                            $route['action']
+                        );
+                        return;
+                    }
+                }
+            }
         }
 
         if (isset($this->routes[$method]['dynamic'])) {
@@ -54,19 +86,28 @@ class Router
             }
         }
 
-        if (str_starts_with($uri, "/post/")) {
-            $postSegment = substr($uri, strlen("/post/"));
-            $parts = explode('-', $postSegment, 2);
-            $postId = (int)($parts[0] ?? null);
+        // If no route matches, show 404
+        $this->callAction(ErrorController::class, 'notFound');
+    }
 
-            if (is_numeric($postId)) {
-                $_GET["id"] = $postId;
-                $this->callAction('PostController', 'show');
-                return;
-            }
-        }
+    public function convertTitleToURL($str)
+    {
+        // Convert string to lowercase
+        $str = strtolower($str);
 
-        $this->callAction('ErrorController', 'notFound');
+        // Replace spaces with hyphens
+        $str = str_replace(' ', '-', $str);
+
+        // Remove special characters
+        $str = preg_replace('/[^a-z0-9\-]/', '', $str);
+
+        // Remove consecutive hyphens
+        $str = preg_replace('/-+/', '-', $str);
+
+        // Trim hyphens from beginning and end
+        $str = trim($str, '-');
+
+        return $str;
     }
 
     protected function callAction(string $controller, string $action): void
@@ -74,13 +115,13 @@ class Router
         $controllerClass = $this->controllersNamespace . $controller;
 
         if (!class_exists($controllerClass)) {
-            throw new \RuntimeException("Controller class {$controllerClass} not found");
+            echo "Controller class {$controllerClass} not found";
         }
 
         $controllerInstance = new $controllerClass();
 
         if (!method_exists($controllerInstance, $action)) {
-            throw new \RuntimeException("Method {$action} not found in controller {$controllerClass}");
+            echo "Method {$action} not found in controller {$controllerClass}";
         }
 
         $controllerInstance->$action();

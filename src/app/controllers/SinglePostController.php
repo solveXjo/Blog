@@ -3,57 +3,85 @@
 namespace App\Controllers;
 
 use App\Core\BaseController;
-
-
-require_once 'src/app/controllers/Posts.php';
-
+use App\Core\Database;
+use App\Models\PostRepository;
+use App\Models\UserRepository;
+use App\Core\Route;
 
 class SinglePostController extends BaseController
 {
+    protected $postRepo;
+    protected $userRepo;
 
-
-
+    public function __construct()
+    {
+        parent::__construct();
+        $config = require "src/config/config.php";
+        $db = new Database($config);
+        $this->postRepo = new PostRepository($db);
+        $this->userRepo = new UserRepository($db);
+    }
 
     public function getPostId()
     {
         $postId = $_GET['id'] ?? null;
 
         if (!is_numeric($postId)) {
-            $postId = substr($_SERVER['REQUEST_URI'], strlen('/post/'));
+            // Extract ID from URL for /post/123-title format
+            $path = $_SERVER['REQUEST_URI'];
+            if (preg_match('|/post/(\d+)|', $path, $matches)) {
+                $postId = $matches[1];
+            }
         }
 
-        if (empty($postId) || !is_numeric(value: $postId)) {
+        if (empty($postId) || !is_numeric($postId)) {
             die("Invalid post ID.");
         }
 
         return $postId;
     }
+
     public function show()
     {
+        $config = require "src/config/config.php";
+
+        $db = new Database($config);
+        $postRepo = new PostRepository($db);
+        $userRepo = new UserRepository($db);
+        $SP = $this;
+
+        $postId = $SP->getPostId();
+        $singlepost = $postRepo->getPostById($postId);
+
+
+
+        $userId = $SP->getUserId($singlepost);
+        $userInfo = $userRepo->getUserById($userId);
+
+
+        $userInfo = $userRepo->getUserById($userId);
+        if (!$singlepost) {
+            die("Post not found.");
+        }
+
+
 
         echo $this->view->renderWithLayout('single-post.view.php', 'layouts/main.php', [
-            'title' => 'Post - Altibbi',
-            'page Title' => "post",
+            'title' => 'post',
+            'postData' => $this->postData,
+            'postId' => $postId,
+            'singlepost' => $singlepost,
+            'userId' => $userId,
+            'userInfo' => $userInfo
 
-            'postData' => $this->postData
         ]);
     }
-    // public function getSinglePost($postId)
-    // {
-    //     $singlepost = $this->postRepo->getPostById($postId);
-
-    //     if (!$singlepost) {
-    //         die("Post not found.");
-    //     }
-
-    //     return $singlepost;
-    // }
 
     public function getUserId($singlepost)
     {
         $userId = $singlepost['user_id'];
 
-        if (empty($userId) || !is_numeric(value: $userId)) {
+        if (empty($userId) || !is_numeric($userId)) {
             die("Invalid user ID.");
         }
 

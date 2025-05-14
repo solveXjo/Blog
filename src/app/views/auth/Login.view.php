@@ -1,17 +1,8 @@
 <?php
-require_once 'app/controllers/Login.php';
+require_once 'src/app/controllers/Login.php';
+include 'src/Partials/head.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <?php
-  $include = include 'Partials/head.php';
-  ?>
-  <title>Login</title>
-
-</head>
 
 <body>
   <div class="container py-5">
@@ -23,7 +14,7 @@ require_once 'app/controllers/Login.php';
               <div class="card-body p-md-5 mx-md-4">
 
                 <div class="text-center">
-                  <img src="public/images/download.png"
+                  <img src="src/public/images/download.png"
                     style="width: 185px;" alt="logo">
                   <h4 class="mt-1 mb-5 pb-1">Welcome to Our Platform</h4>
                 </div>

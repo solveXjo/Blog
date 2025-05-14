@@ -44,7 +44,7 @@
                         <div class="swiper-wrapper">
                             <?php for ($x = 0; $x < 5; $x++) : ?>
 
-                                <div class="swiper-slide" style="background-image: url('src/<?= $allPosts[$x]["image_path"] ?>');">
+                                <div class="swiper-slide" style="background-image: url('<?= $allPosts[$x]["image_path"] ?>');">
                                     <div class="content">
                                         <h2><a><?= $allPosts[$x]["caption"] ?></a></h2>
                                         <p style="color: cornsilk;"><?= $allPosts[$x]["name"] ?></p>
@@ -135,7 +135,7 @@
 
                         <?php if (!empty($mostLikedPosts) && isset($mostLikedPosts[0])): ?>
                             <div class="post-entry lg">
-                                <a><img src="src/<?= $mostLikedPosts[0]["image_path"] ?? "src/public/images/download.png" ?>" class="img-fluid"></a>
+                                <a><img src="<?= $mostLikedPosts[0]["image_path"] ?? "public/images/download.png" ?>" class="img-fluid"></a>
                                 <div class="post-meta"><span class="date"><?= $mostLikedPosts[0]["category"] ?></span> <span class="mx-1">•</span> <span><?= date('M j', strtotime($mostLikedPosts[0]["created_at"])) ?></span>‘</div>
                                 <h2><a href="/post/<?= $mostLikedPosts[0]['id'] ?>"><?= htmlspecialchars($mostLikedPosts[0]['caption']) ?></a></h2>
 
@@ -155,7 +155,7 @@
                             <div class="col-lg-4 border-start custom-border">
                                 <div class="post-entry">
                                     <?php for ($x = 1; $x < 5; $x++): ?>
-                                        <a><img src="src/<?= $mostLikedPosts[$x]["image_path"] ?> " alt="" class="img-fluid"></a>
+                                        <a><img src="<?= $mostLikedPosts[$x]["image_path"] ?> " alt="" class="img-fluid"></a>
                                         <div class="post-meta"><span class="date"><?= $mostLikedPosts[$x]["category"] ?></span> <span class="mx-1">•</span> <span><?= date('M j', strtotime($mostLikedPosts[$x]["created_at"])) ?></span></div>
                                         <h2><a href="/post/<?= $mostLikedPosts[$x]['id'] ?>"> <?= $mostLikedPosts[$x]["caption"] ?></a></h2>
                                     <?php endfor; ?>

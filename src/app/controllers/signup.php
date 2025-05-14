@@ -1,6 +1,8 @@
 <?php
 
-$db = new Database(require 'config/config.php');
+use App\Core\Database;
+
+$db = new Database(require 'src/config/config.php');
 
 
 

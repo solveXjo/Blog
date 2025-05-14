@@ -1,9 +1,4 @@
-<head>
-  <title>About</title>
-</head>
-
 <body>
-
   <!-- About Section -->
   <section id="about" class="about section">
 
@@ -51,12 +46,8 @@
 
       </div>
 
-      <?php include 'src/app/views/team.view.php'; ?>
+      <?php require_once 'src/app/views/team.view.php'; ?>
 
     </div>
-  </section><!-- /About Section -->
-
-
+  </section>
 </body>
-
-</html>

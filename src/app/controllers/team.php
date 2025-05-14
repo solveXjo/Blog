@@ -22,7 +22,3 @@ class Team
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-
-
-$team = new Team();
-$teamMembers = $team->getAllTeamMembers();
