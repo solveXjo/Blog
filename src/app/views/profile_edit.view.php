@@ -195,7 +195,7 @@
 
                 </div>
                 <h3>About</h3>
-                <form method="post" action="" enctype="multipart/form-data">
+                <form method="post" action="/profile_edit" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="name" class="form-label">Name</label>
                         <input type="text" class="form-control" id="name" name="name"

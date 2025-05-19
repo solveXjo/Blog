@@ -6,6 +6,7 @@ class View
 {
     protected $path;
     protected $data = [];
+    public $title;
 
     public function __construct(string $path = 'src/app/views')
     {

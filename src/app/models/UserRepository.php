@@ -41,7 +41,7 @@ class UserRepository
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function updateUser($userId, $name, $title, $age, $email, $password = null, $bio = null, $location = null)
+    public function updateUser($userId, $name, $title, $age, $email, $bio = null, $location = null)
     {
         $query = "UPDATE users SET 
             name = :name,
@@ -61,11 +61,6 @@ class UserRepository
             ':id' => $userId
         ];
 
-        if ($password) {
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $query .= ", password = :password";
-            $params[':password'] = $hashedPassword;
-        }
 
         $query .= " where id = :id";
 

@@ -15,7 +15,6 @@
         <section id="contact" class="contact section">
             <div class="container" data-aos="fade-up" data-aos-delay="100">
                 <div class="row gy-4 mb-5">
-                    <!-- Contact info cards... -->
                 </div>
 
                 <div class="row">

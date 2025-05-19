@@ -8,24 +8,22 @@ use App\Core\View;
 use App\Models\PostRepository;
 use App\Models\UserRepository;
 
+use Phpfastcache\CacheManager;
+use Phpfastcache\Config\ConfigurationOption;
+
 class BaseController
 {
-    protected $db;
+    protected $app;
     protected $view;
 
-    protected $postRepo;
-
-    protected $userRepo;
-    protected $postData = [];
 
     public function __construct()
     {
-        $config = require 'src/config/config.php';
-        $this->db = new Database($config);
-        $this->view = new View('src/app/views');
+        $this->app = $GLOBALS['app'];
+        $this->view = new View();
 
-        $this->postData = $_POST ?? [];
     }
+
 
     public function getCurrentCategory(): string
     {

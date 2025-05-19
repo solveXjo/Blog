@@ -3,25 +3,9 @@
 namespace App\Controllers;
 
 use App\Core\BaseController;
-use App\Core\Database;
-use App\Models\PostRepository;
-use App\Models\UserRepository;
-use App\Core\Route;
 
 class SinglePostController extends BaseController
 {
-    protected $postRepo;
-    protected $userRepo;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $config = require "src/config/config.php";
-        $db = new Database($config);
-        $this->postRepo = new PostRepository($db);
-        $this->userRepo = new UserRepository($db);
-    }
-
     public function getPostId()
     {
         $postId = $_GET['id'] ?? null;
@@ -43,37 +27,22 @@ class SinglePostController extends BaseController
 
     public function show()
     {
-        $config = require "src/config/config.php";
+        $postId = $this->getPostId();
+        $singlepost = $this->app->postRepo->getPostById($postId);
 
-        $db = new Database($config);
-        $postRepo = new PostRepository($db);
-        $userRepo = new UserRepository($db);
-        $SP = $this;
-
-        $postId = $SP->getPostId();
-        $singlepost = $postRepo->getPostById($postId);
-
-
-
-        $userId = $SP->getUserId($singlepost);
-        $userInfo = $userRepo->getUserById($userId);
-
-
-        $userInfo = $userRepo->getUserById($userId);
         if (!$singlepost) {
             die("Post not found.");
         }
 
-
+        $userId = $this->getUserId($singlepost);
+        $userInfo = $this->app->userRepo->getUserById($userId);
+        $this->view->title = $singlepost['caption'];
 
         echo $this->view->renderWithLayout('single-post.view.php', 'layouts/main.php', [
-            'title' => 'post',
-            'postData' => $this->postData,
+            'title' => 'Post - ' . $singlepost['caption'],
             'postId' => $postId,
             'singlepost' => $singlepost,
-            'userId' => $userId,
             'userInfo' => $userInfo
-
         ]);
     }
 
@@ -86,16 +55,5 @@ class SinglePostController extends BaseController
         }
 
         return $userId;
-    }
-
-    public function getUserInfo($userId)
-    {
-        $userInfo = $this->userRepo->getUserById($userId);
-
-        if (!$userInfo) {
-            die("User not found.");
-        }
-
-        return $userInfo;
     }
 }

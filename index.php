@@ -1,10 +1,10 @@
 <?php
 
-require 'src/config/bootstrap.php';
 require 'vendor/autoload.php';
+require 'src/config/bootstrap.php';
 
-$router = require 'src/config/routes.php';
+$config = require "src/config/config.php";
+$app = new \App\Core\App($config);
+$app->run();
 
-$uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
-$router->route($uri);

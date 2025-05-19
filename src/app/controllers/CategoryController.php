@@ -14,7 +14,6 @@ class CategoryController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this->postRepo = new PostRepository($this->db);
     }
 
     public function show()
@@ -23,12 +22,13 @@ class CategoryController extends BaseController
         $postsData = $this->getPaginatedPosts($currentCategory);
 
         $currentCategory = $this->getCurrentCategory();
-        $categories = $this->postRepo->getAllCategories();
+        $categories = $this->app->postRepo->getAllCategories();
         $pageTitle = $this->getPageTitle($currentCategory);
 
         echo $this->view->renderWithLayout('category.view.php', 'layouts/main.php', [
-            'title' => "Category",
-            'posts' => $postsData['posts'],
+            $this->view->title = $this->getCurrentCategory(),
+
+        'posts' => $postsData['posts'],
             'totalPages' => $postsData['totalPages'],
             'currentPage' => $postsData['currentPage'],
             'currentCategory' => $currentCategory
@@ -91,7 +91,7 @@ class CategoryController extends BaseController
             $query .= " WHERE category = :category";
         }
 
-        $stmt = $this->db->connection->prepare($query);
+        $stmt = $this->app->db->connection->prepare($query);
         if (!empty($currentCategory)) {
             $stmt->bindParam(':category', $currentCategory, PDO::PARAM_STR);
         }
@@ -109,7 +109,7 @@ class CategoryController extends BaseController
         }
         $query .= " ORDER BY id DESC LIMIT :offset, :perpage";
 
-        $stmt = $this->db->connection->prepare($query);
+        $stmt = $this->app->db->connection->prepare($query);
         if (!empty($currentCategory)) {
             $stmt->bindParam(':category', $currentCategory, PDO::PARAM_STR);
         }

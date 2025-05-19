@@ -9,7 +9,7 @@
                         <div class="author-card" data-aos="fade-up">
                             <div class="author-image">
                                 <label for="image" class="btn" style="margin-top: 70px;">
-                                    <img src="uploads/<?= !empty($user['image_path']) ? htmlspecialchars($user['image_path']) : 'src/uploads/default.png' ?>" />
+                                    <img src="<?= !empty($user['image_path']) ? "uploads/".htmlspecialchars($user['image_path']) : 'uploads/default.png' ?>" />
                                 </label>
 
                             </div>

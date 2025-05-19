@@ -1,132 +1,79 @@
 <?php
-
 namespace App\Controllers;
 
-
-
 use App\Core\BaseController;
-
 use App\Models\PostRepository;
-use App\Core\Database;
-
 
 class HomeController extends BaseController
 {
 
 
+public function show()
+{
+$postRepo = new PostRepository($this->app->db);
+$allPosts = $postRepo->getAllPosts();
+$mostLikedPosts = $postRepo->getMostLikedPosts(5);
 
+echo $this->view->renderWithLayout('index.view.php', 'layouts/main.php', [
+    $this->view->title = 'Home - Altibbi',
+'allPosts' => $allPosts,
+'mostLikedPosts' => $mostLikedPosts
+]);
+}
 
-    // public function render($name, $data = [])
-    // {
-    //     return $this->view->render($name, $data);
-    // }
+public function handlePostRequest()
+{
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+header('Location: /home');
+exit();
+}
 
+$caption = trim($_POST['caption'] ?? '');
+$description = trim($_POST['description'] ?? '');
+$quote = trim($_POST['quote'] ?? '');
+$category = $_POST['category'] ?? 'others';
 
-    // public function home()
-    // {
-    //     $content = $this->render('toosososasosa', []);
-    // }
+if (!isset($_SESSION['user_id'])) {
+header("Location: /Login");
+exit();
+}
 
-    protected $db;
+$user_id = $_SESSION['user_id'];
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
+if (empty($caption)) {
+$_SESSION['form_error'] = "Caption is required";
+header("Location: /home");
+exit();
+}
 
-    public function show()
-    {
-        $HomeController = new HomeController;
-        $config = require 'src/config/config.php';
-        $db = new Database($config);
+// Handle image upload
+$imagePath = null;
+if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+$uploadDir = 'uploads/posts/';
+if (!is_dir($uploadDir)) {
+mkdir($uploadDir, 0755, true);
+}
 
-        $postRepo = new PostRepository($db);
+$extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+$filename = uniqid() . '.' . $extension;
+$destination = $uploadDir . $filename;
 
-        $HomeController->handlePostRequest();
-        $allPosts = $postRepo->getAllPosts();
-        $mostLikedPosts = $postRepo->getMostLikedPosts(5);
-        echo $this->view->renderWithLayout('index.view.php', 'layouts/main.php', [
-            'title' => 'Home - Altibbi',
-            'postData' => $this->postData,
-            'HomeController' => $HomeController,
-            'allPosts' => $allPosts,
-            'mostLikedPosts' => $mostLikedPosts
-        ]);
-    }
+if (move_uploaded_file($_FILES['image']['tmp_name'], $destination)) {
+$imagePath = $destination;
+}
+}
 
-    public function handle()
-    {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /home');
-            exit();
-        }
+try {
+$postRepo = new PostRepository($this->app->db);
+$postRepo->createPost($user_id, $caption, $description,$quote, $category ,$imagePath );
 
-        $this->show();
-    }
-    public function getUser()
-    {
-        if (!isset($_SESSION['user_id'])) {
-            header("Location: /Login");
-            exit();
-        }
-    }
-    public function handlePostRequest()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $caption = trim($_POST['caption']);
-            $description = trim($_POST['description']);
-            $quote = trim($_POST['quote']);
-            $category = $_POST["category"] ?? 'others';
-            $user_id = $_SESSION['user_id'];
-
-            if (empty($caption)) {
-                header("Location: /home");
-                exit();
-            }
-            if (strlen($caption) > 50) {
-                $caption = substr($caption, 0, 50) . '...';
-            }
-
-            // Handle image upload
-            $imagePath = null;
-            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $uploadDir = 'uploads/posts/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
-                }
-
-                $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $filename = uniqid() . '.' . $extension;
-                $destination = $uploadDir . $filename;
-
-                if (move_uploaded_file($_FILES['image']['tmp_name'], $destination)) {
-                    $imagePath = $destination;
-                }
-            }
-
-            $query = "SELECT name FROM users WHERE id = :user_id";
-            $stmt = $this->db->connection->prepare($query);
-            $stmt->execute(['user_id' => $user_id]);
-            $user = $stmt->fetch();
-            $name = $user['name'];
-
-            $query = "INSERT INTO posts (user_id, name, caption, likes, created_at, category, image_path, quote, description) 
-              VALUES (:user_id, :name, :caption, 0, NOW(), :category, :image_path, :quote, :description)";
-            $stmt = $this->db->connection->prepare($query);
-
-            $stmt->execute([
-                'user_id' => $user_id,
-                'name' => $name,
-                'caption' => $caption,
-                'category' => $category,
-                'image_path' => $imagePath,
-                'quote' => $quote,
-                'description' => $description
-            ]);
-
-            $this->postData = [];
-            header("Location: /posts");
-            exit();
-        }
-    }
+$_SESSION['form_success'] = "Post created successfully!";
+header("Location: /posts");
+exit();
+} catch (\Exception $e) {
+$_SESSION['form_error'] = "Error creating post: " . $e->getMessage();
+header("Location: /home");
+exit();
+}
+}
 }

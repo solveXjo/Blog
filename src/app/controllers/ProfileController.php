@@ -16,18 +16,18 @@ class ProfileController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this->userRepo = new UserRepository($this->db);
+        $this->userRepo = new UserRepository($this->app->db);
     }
     public function show()
     {
         $user = $this->getProfile();
         if (!$user) {
-            header("Location: /login");
+            header("Location: /Login");
             exit();
         }
 
         echo $this->view->renderWithLayout('profile.view.php', 'layouts/main.php', [
-            'title' => htmlspecialchars($user['name']) . "'s Profile",
+            $this->view->title=($user['name']) . "'s Profile",
             'user' => $user,
             'errors' => $this->errors,
             'success' => $this->success
@@ -38,7 +38,7 @@ class ProfileController extends BaseController
     public function handleProfileUpdate()
     {
         if (!isset($_SESSION['user_id'])) {
-            header("Location: /login");
+            header("Location: /Login");
             exit();
         }
 
@@ -127,7 +127,7 @@ class ProfileController extends BaseController
     {
         if ($this->userRepo->deleteUser($userId)) {
             session_destroy();
-            header("Location: /login");
+            header("Location: /Login");
             exit();
         } else {
             $this->errors[] = "Failed to delete account.";

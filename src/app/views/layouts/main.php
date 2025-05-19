@@ -1,9 +1,14 @@
+<?php
+/**
+* @var $this \App\Core\View
+**/
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <?php include 'src/Partials/head.php'; ?>
-    <title><?= $title ?? 'Default Title' ?></title>
+    <title><?= $this->title ?? 'Default Title' ?></title>
 </head>
 
 <body class="contact-page">

@@ -6,6 +6,7 @@ use App\Core\BaseController;
 use App\Models\UserRepository;
 
 use App\Core\Route;
+use App\Core\App;
 use Exception;
 
 class EditProfileController extends BaseController
@@ -16,7 +17,6 @@ class EditProfileController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this->userRepo = new UserRepository($this->db);
 
         if (!isset($_SESSION['profile_update_success'])) {
             $_SESSION['profile_update_success'] = '';
@@ -52,13 +52,13 @@ class EditProfileController extends BaseController
             header("Location: /Login");
             exit();
         }
-        return $this->userRepo->getUserById($_SESSION['user_id']);
+        return $this->app->userRepo->getUserById($_SESSION['user_id']);
     }
 
     public function deleteAccount($userId)
     {
         if (isset($_POST['delete_account'])) {
-            if ($this->userRepo->deleteUser($userId)) {
+            if ($this->app->userRepo->deleteUser($userId)) {
                 session_destroy();
                 header("Location: /Login");
                 exit();
@@ -82,7 +82,7 @@ class EditProfileController extends BaseController
             $_SESSION['profile_update_error'] = "Password length should be more than 7 characters.";
             return false;
         } else {
-            if ($this->userRepo->changePassword($userId, $newPassword)) {
+            if ($this->app->userRepo->changePassword($userId, $newPassword)) {
                 $_SESSION['profile_update_success'] = "Password updated successfully!";
                 header("Location: /profile");
                 exit();
@@ -117,7 +117,7 @@ class EditProfileController extends BaseController
                 }
 
                 if (move_uploaded_file($file['tmp_name'], "{$uploadDir}{$newFileName}")) {
-                    $oldImage = $this->userRepo->updateImage($userId, $newFileName);
+                    $oldImage = $this->app->userRepo->updateImage($userId, $newFileName);
                     $_SESSION['profile_update_success'] = "Profile image updated successfully!";
                     header("Location: /profile");
                     exit();
@@ -134,34 +134,36 @@ class EditProfileController extends BaseController
 
     public function updateProfile($userId)
     {
-        $name = $_POST['name'] ?? '';
-        $title = $_POST['title'] ?? '';
-        $age = $_POST['age'] ?? '';
-        $email = $_POST['email'] ?? '';
-        $bio = $_POST['bio'] ?? '';
+        $name = $_POST['name'] ;
+        $title = $_POST['title'];
+        $age = $_POST['age'] ;
+        $email = $_POST['email'] ;
+        $bio = $_POST['bio'] ;
         $location = $_POST['location'] ?? 'Palestine';
-        $password = $_POST['password'];
 
-        $stmt = $this->db->connection->prepare("SELECT * FROM users WHERE email = :email AND id != :id");
+        $stmt = $this->app->db->connection->prepare("SELECT * FROM users WHERE email = :email AND id != :id");
         $stmt->execute(['email' => $email, 'id' => $userId]);
 
         if (!$name || !$age || !$email) {
             $_SESSION['profile_update_error'] = "Name, age, and email are required fields.";
             return false;
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        }
+        elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $_SESSION['profile_update_error'] = "Invalid email format.";
             return false;
-        } elseif ($stmt->fetch()) {
+        }
+        elseif ($stmt->fetch()) {
             $_SESSION['profile_update_error'] = "Email already registered by another user.";
             return false;
-        } elseif ($age > 80 || $age < 18) {
+        }
+        elseif ($age > 80 || $age < 18) {
             $_SESSION['profile_update_error'] = "The age must be between 18 and 80.";
             return false;
-        } else {
-            if ($this->userRepo->updateUser($userId, $name, $title, $age, $email, $password, $bio, $location)) {
+        }
+        else {
+            if ($this->app->userRepo->updateUser($userId, $name, $title, $age, $email, $bio, $location)) {
                 $_SESSION['profile_update_success'] = "Profile updated successfully!";
-                header("Location: /profile");
-                exit();
+                return true;
             } else {
                 $_SESSION['profile_update_error'] = "Failed to update profile.";
                 return false;

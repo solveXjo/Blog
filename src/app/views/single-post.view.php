@@ -2,12 +2,6 @@
 // require "controllers/Posts.php";
 require 'vendor/autoload.php';
 
-$config = require "src/config/config.php";
-
-$db = new App\Core\Database($config);
-$postRepo = new App\Models\PostRepository($db);
-$userRepo = new App\Models\UserRepository($db);
-$SP = new App\Controllers\SinglePostController();
 
 $parser = new Parsedown();
 
@@ -15,7 +9,6 @@ $parser = new Parsedown();
 ?>
 
 <head>
-    <title>Single Post</title>
 
     <script type="application/json" class="swiper-config">
         {

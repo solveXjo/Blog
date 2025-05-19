@@ -14,6 +14,14 @@ class PostRepository
         $this->db = $db;
     }
 
+
+    public function getPostCount()
+    {
+        $stmt = $this->db->connection->prepare("SELECT COUNT(*) as count FROM posts");
+        $stmt->execute();
+        $result = $stmt->fetch();
+        return $result['count'];
+    }
     public function getAllPosts()
     {
         $query = "SELECT posts.*, users.name FROM posts INNER JOIN users ON posts.user_id = users.id ORDER BY posts.created_at DESC";

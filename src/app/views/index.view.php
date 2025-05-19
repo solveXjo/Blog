@@ -72,7 +72,7 @@
     </div>
     <div class="container create-post-card card mb-4">
         <div class="m-3 p-4">
-            <form action="" method="post" enctype="multipart/form-data">
+            <form action="/home" method="post" enctype="multipart/form-data">
                 <!-- Category Selector -->
                 <label for="">Category</label>
                 <div class="mb-3">

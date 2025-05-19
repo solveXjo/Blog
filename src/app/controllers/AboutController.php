@@ -16,7 +16,8 @@ class AboutController
     public function __construct()
     {
         $this->view = new View();
-        $this->postData = $_POST ?? [];
+        $this->view->title = 'About - Altibbi';
+
     }
     #[Route('/about', 'GET')]
 

@@ -9,18 +9,11 @@ use App\Models\UserRepository;
 
 use App\Core\Route;
 
+use App\Core\App;
+
 class CommentController extends BaseController
 {
-    protected $postRepo;
-    protected $userRepo;
-    protected $db;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->postRepo = new PostRepository($this->db);
-        $this->userRepo = new UserRepository($this->db);
-    }
 
     public function show()
     {
@@ -35,7 +28,6 @@ class CommentController extends BaseController
 
         echo $this->view->renderWithLayout('comment.view.php', 'layouts/main.php', [
             "title" => "Comment -Altibbi",
-            'postData' => $this->postData,
             'postId' => $postId,
             'userId' => $userId,
             'userInfo' => $userInfo,
@@ -108,7 +100,7 @@ class CommentController extends BaseController
     public function addComment($postId, $userId, $commentText, $parentId = null)
     {
         if ($postId && !empty($commentText)) {
-            $this->postRepo->addComment($postId, $userId, $commentText, $parentId);
+            $this->app->postRepo->addComment($postId, $userId, $commentText, $parentId);
             header("Location: /comment/" . $postId);
             exit();
         }
@@ -122,7 +114,7 @@ class CommentController extends BaseController
         $parentId = $_POST['parent_id'] ?? null;
 
         if ($postId && $parentId && !empty($commentText)) {
-            $this->postRepo->addComment($postId, $userId, $commentText, $parentId);
+            $this->app->postRepo->addComment($postId, $userId, $commentText, $parentId);
             header("Location: /comment/" . $postId);
             exit();
         }
@@ -173,7 +165,7 @@ class CommentController extends BaseController
 
     public function getAllComments($postId)
     {
-        return $this->postRepo->getAllComments($postId);
+        return $this->app->postRepo->getAllComments($postId);
     }
 
     public function getCommentCount($comments)
@@ -183,7 +175,7 @@ class CommentController extends BaseController
 
     public function getUserInfo($userId)
     {
-        return $this->userRepo->getUserById($userId);
+        return $this->app->userRepo->getUserById($userId);
     }
 
     public function processRequest()
